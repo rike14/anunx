@@ -6,8 +6,8 @@ import theme from '../src/theme';
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
-        <Head>
+      <Html lang="en" >
+        <Head >
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link
@@ -15,7 +15,7 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
         </Head>
-        <body>
+        <body >
           <Main />
           <NextScript />
         </body>
