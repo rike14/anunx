@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
     Container,
     Typography,
@@ -5,13 +6,18 @@ import {
     TextField,
     Select,
     Button,
+    IconButton,
 }   from '@material-ui/core'
+import { useDropzone } from 'react-dropzone'
+import { DeleteForever } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 
 import TemplateDefault from '../../src/templates/Default'
 
 
 const useStyles = makeStyles((theme) => ({
+    mainImage: {},
+    mask: {},
     container: {
         padding: theme.spacing(8, 0, 6),
     },
@@ -21,12 +27,79 @@ const useStyles = makeStyles((theme) => ({
     box: {
         backgroundColor: theme.palette.background.white,
         padding: theme.spacing(3),
-    }
+    },
+    thumbsContainer: {
+        display: 'flex',
+        marginTop: 15,
+        flexWrap: 'wrap',
+    },
+    dropZone: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: 10,
+        margin: '0 10px 10px 0',
+        width: 200,
+        height: 150,
+        backgroundColor: theme.palette.background.default,
+        border: '2px dashed black',
+    },
+    thumb: {
+        position: 'relative',
+        width: 200,
+        height: 150,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        margin: '0 15px 15px 0',
+
+        '& $mainImage': {
+            position: 'absolute',
+            backgroundColor: 'blue',
+            padding: 6,
+            bottom: 0,
+            left: 0,
+        },
+
+        '&:hover $mask': {
+            cursor: 'pointer',
+            display: 'flex',
+        },
+
+        '& $mask': {
+            display: 'none',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            height: '100%',
+            width: '100%',
+        },
+    },
+
 }))
 
 
 const Publish = () => {
     const classes = useStyles()
+    const [files, setFiles] = useState([])
+
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: 'image/*',
+        onDrop: (acceptedFile) => {
+            const newFiles = acceptedFile.map((file) => {
+                return Object.assign(file, {
+                    preview: URL.createObjectURL(file),
+                })
+            })
+
+            setFiles([
+                ...files,
+                ...newFiles
+            ])
+        },
+    })
+
     return (
         <TemplateDefault>
             <Container maxWidth="sm" className={classes.container}>
@@ -75,6 +148,41 @@ const Publish = () => {
                     <Typography variant="div" component="body2" align='left' color='textPrimary'>
                         The first image will be the cover
                     </Typography>
+                    <Box className={classes.thumbsContainer}>
+                        <Box className={classes.dropZone} {...getRootProps()}>
+                            <input {...getInputProps()} />
+                            <Typography variant='body2' color='textPrimary'>
+                                Click here to upload images.
+                            </Typography>
+                        </Box>
+                        {
+                            files.map((file, index) => (
+                            
+                                <Box
+                                    key={file.name}
+                                    className={classes.thumb}
+                                    style={{ backgroundImage: `url(${file.preview})` }}
+                                >   
+                                    {
+                                        index === 0 ?
+                                        <Box className={classes.mainImage}>
+                                            <Typography variant='body1' color='secondary'>
+                                                Main
+                                            </Typography>
+                                        </Box>
+                                        : null
+                                    }
+                                    <Box className={classes.mask}>
+                                        <IconButton color='secondary'>
+                                            <DeleteForever fontSize='large'/>
+
+                                        </IconButton>
+                                    </Box>
+                                </Box>
+                            ))
+                        }
+
+                    </Box>
                 </Box>
             </Container>
             <Container maxWidth="md" className={classes.boxContainer}>
@@ -86,7 +194,7 @@ const Publish = () => {
                         Describe your product in detail
                     </Typography>
                     <TextField 
-                        rows={6}
+                        minRows={6}
                         multiline
                         fullWidth
                         variant='outlined'
