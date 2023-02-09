@@ -22,7 +22,11 @@ const useStyles = makeStyles((theme) => ({
   buttonAdd: {
     margin: '30px auto',
     display: 'block',
-  }
+  },
+  card: {
+    maxWidth: 300,
+    margin: '0 auto',
+  },
 }))
 
 export default function Home() {
@@ -32,36 +36,36 @@ export default function Home() {
     <TemplateDefault>
       <Container maxWidth="sm" className={classes.container}>
         <Typography component="h1" variant="h2" align='center'>
-          Meus Anúncios
+          My ads
         </Typography>
         <Button variant='contained' color='primary' className={classes.buttonAdd}>Post new Ad</Button>
       </Container>
       <Container maxWidth="md" >
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} md={4}>
-            <Card>
+            <Card className={classes.card}>
               <CardMedia 
                 className={classes.cardMedia}
                 image={'https://source.unsplash.com/random/'}
                 title="Title of the image"
               />
+              <CardContent>
+                <Typography variant='h5' component='h2'>
+                  Product X
+                </Typography>
+                <Typography>
+                  $ 60,00
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size='small' color='primary'>
+                  Edit
+                </Button>
+                <Button size='small' color='danger'>
+                  Remove
+                </Button>
+              </CardActions>
             </Card>
-            <CardContent>
-              <Typography variant='h5' component='h2'>
-                Product X
-              </Typography>
-              <Typography>
-                $ 60,00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button size='small' color='primary'>
-                Edit
-              </Button>
-              <Button size='small' color='danger'>
-                Remove
-              </Button>
-            </CardActions>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card>
@@ -70,23 +74,23 @@ export default function Home() {
                 image={'https://source.unsplash.com/random'}
                 title="Title of the image"
               />
+              <CardContent>
+                <Typography variant='h5' component='h2'>
+                  Product Z
+                </Typography>
+                <Typography>
+                  $ 80,00
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size='small' color='primary'>
+                  Edit
+                </Button>
+                <Button size='small' color='danger'>
+                  Remove
+                </Button>
+              </CardActions>
             </Card>
-            <CardContent>
-              <Typography variant='h5' component='h2'>
-                Produto Z
-              </Typography>
-              <Typography>
-                $ 80,00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button size='small' color='primary'>
-                Edit
-              </Button>
-              <Button size='small' color='danger'>
-                Remove
-              </Button>
-            </CardActions>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card>
@@ -95,23 +99,23 @@ export default function Home() {
                 image={'https://source.unsplash.com/random'}
                 title="Title of the image"
               />
+              <CardContent>
+                <Typography variant='h5' component='h2'>
+                  Product Y
+                </Typography>
+                <Typography>
+                  $ 40,00
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size='small' color='primary'>
+                  Edit
+                </Button>
+                <Button size='small' color='danger'>
+                  Remove
+                </Button>
+              </CardActions>
             </Card>
-            <CardContent>
-              <Typography variant='h5' component='h2'>
-                Product Y
-              </Typography>
-              <Typography>
-                $ 40,00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button size='small' color='primary'>
-                Edit
-              </Button>
-              <Button size='small' color='danger'>
-                Remove
-              </Button>
-            </CardActions>
           </Grid>
         </Grid>
       </Container>
