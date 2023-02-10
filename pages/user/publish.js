@@ -18,9 +18,6 @@ import TemplateDefault from '../../src/templates/Default'
 const useStyles = makeStyles((theme) => ({
     mainImage: {},
     mask: {},
-    container: {
-        padding: theme.spacing(8, 0, 6),
-    },
     boxContainer: {
         padding: theme.spacing(3),
     },
@@ -107,7 +104,7 @@ const Publish = () => {
 
     return (
         <TemplateDefault>
-            <Container maxWidth="sm" className={classes.container}>
+            <Container maxWidth="sm" >
                 <Typography variant="h2" component="h1" align='center' color='primary'>
                     Post Ad
                 </Typography>

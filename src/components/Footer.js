@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme) => ({
         borderTop: `1px solid ${theme.palette.divider}`,
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
-        marginTop: theme.spacing(8),
         [theme.breakpoints.up('sm')]: {
             paddingTop: theme.spacing(6),
             paddingBottom: theme.spacing(6),
@@ -14,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     },
     footerLink: {
         textDecoration: 'none',
+        color: theme.palette.text.secondary,
     }
 }));
 

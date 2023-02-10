@@ -1,9 +1,4 @@
 import {  
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardMedia,
     Container, 
     Grid, 
     IconButton, 
@@ -14,19 +9,17 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import TemplateDefault from '../src/templates/Default';
+import Card from '../src/components/Card';
 
 const useStyles = makeStyles((theme) => ({
-    searchContainer: { 
-        padding: theme.spacing(8, 10, 6),
-    },
     searchBox: {
         display: 'flex',
         justifyContent: 'center',
         padding: theme.spacing(0,2),
         marginTop: 20,
     },
-    cardMedia: {
-        paddingTop: '56%',
+    cardGrid: {
+        marginTop: 50,
     },
 }));
 
@@ -35,7 +28,7 @@ const Home = () => {
 
     return (
         <TemplateDefault>
-            <Container maxWidth="md" className={classes.searchContainer}>
+            <Container maxWidth="md" >
                 <Typography component="h1" variant='h3' align='center' color='textPrimary'>
                     What do you want to find?
                 </Typography>
@@ -57,55 +50,25 @@ const Home = () => {
                 <br />
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Card>
-                            <CardMedia
-                                className={classes.cardMedia}
-                                image={'https://source.unsplash.com/random/'}
-                                title="Title of the image"
-                            />
-                            <CardContent>
-                                <Typography variant='h5' component='h2'>
-                                    Product X
-                                </Typography>
-                                <Typography>
-                                    $ 60,00
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        <Card
+                            image={'https://source.unsplash.com/random'}
+                            title="Product X"
+                            subtitle='$ 60,00'
+                        />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Card>
-                            <CardMedia
-                                className={classes.cardMedia}
-                                image={'https://source.unsplash.com/random'}
-                                title="Title of the image"
-                            />
-                            <CardContent>
-                                <Typography variant='h5' component='h2'>
-                                    Product Z
-                                </Typography>
-                                <Typography>
-                                    $ 80,00
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        <Card
+                            image={'https://source.unsplash.com/random'}
+                            title="Product Z"
+                            subtitle='$ 80,00'
+                        />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Card>
-                            <CardMedia
-                                className={classes.cardMedia}
-                                image={'https://source.unsplash.com/random'}
-                                title="Title of the image"
-                            />
-                            <CardContent>
-                                <Typography variant='h5' component='h2'>
-                                    Product Y
-                                </Typography>
-                                <Typography>
-                                    $ 40,00
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        <Card
+                            image={'https://source.unsplash.com/random'}
+                            title="Product Y"
+                            subtitle='$ 40,00'
+                        />
                     </Grid>
                 </Grid>
             </Container>
