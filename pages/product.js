@@ -1,5 +1,17 @@
-import { Avatar, Box, Card, CardHeader, CardMedia, Chip, Container, Grid, makeStyles, Typography } from '@material-ui/core';
+import { 
+    Avatar, 
+    Box, 
+    Card, 
+    CardHeader, 
+    CardMedia, 
+    Chip, 
+    Container, 
+    Grid, 
+    makeStyles, 
+    Typography 
+} from '@material-ui/core';
 import TemplateDefault from '../src/templates/Default';
+import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles((theme) => ({
     box: {
@@ -14,6 +26,12 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold',
         marginBottom: '15px',
     },
+    card: {
+        height: '100%',
+    },
+    cardMedia: {
+        paddingTop: '56.25%', // 16:9
+    },
 }));
 
 const Product = () => {
@@ -25,7 +43,29 @@ const Product = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Box className={classes.box}>
-                            Carousel
+                            <Carousel
+                                autoPlay={false}
+                                animation='slide'
+                                navButtonsProps={{
+                                    style: {
+                                        color: '#fff',
+                                    }
+                                }}
+
+                            >
+                            <Card className={classes.card}>
+                                <CardMedia className={classes.cardMedia}
+                                    image="https://source.unsplash.com/random?a=1"
+                                    title="Title of the image"
+                                />
+                            </Card>
+                            <Card className={classes.card}>
+                                <CardMedia className={classes.cardMedia}
+                                        image="https://source.unsplash.com/random?a=2"
+                                    title="Title of the image"
+                                />
+                            </Card>
+                            </Carousel>
                         </Box>
                         <Box className={classes.box} textAlign='left'>   
                             <Typography variant='span' component='caption' display='inline' >Publish February 10 2023</Typography>
