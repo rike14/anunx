@@ -10,7 +10,7 @@ import {
     makeStyles, 
     Typography 
 } from '@material-ui/core';
-import TemplateDefault from '../src/templates/Default';
+import TemplateDefault from '../../src/templates/Default';
 import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles((theme) => ({
