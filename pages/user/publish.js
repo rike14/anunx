@@ -9,6 +9,12 @@ import {
     Select,
     Button,
     IconButton,
+    MenuItem,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
 }   from '@material-ui/core'
 import { useDropzone } from 'react-dropzone'
 import { DeleteForever } from '@material-ui/icons'
@@ -83,6 +89,9 @@ const validationSchema = yup.object().shape({
         .min(6,'Title must be more than six characters')
         .max(80, 'Title must be less than eighty characters')
         .required('Title is required'),
+
+    category: yup.string()
+        .required('Category is required')
 })
 
 
@@ -116,6 +125,7 @@ const Publish = () => {
             <Formik
                 initialValues={{
                     title: '',
+                    category: '',
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
@@ -160,20 +170,20 @@ const Publish = () => {
                                         <Typography variant="h6" component="h6" color='textPrimary'>
                                             Category
                                         </Typography>
-                                        <Select
-                                            native
+                                        <FormControl error={errors.category} fullWidth>
+                                            <Select
+                                            name='category'
+                                            value={values.category}
+                                            onChange={handleChange}
                                             fullWidth
-                                            value=""
-                                            onChange={() => {}}
-                                            inputProps={{
-                                                name: 'age',
-                                            }}>
-                                            <option value="">Select category</option>
-                                            <option value={10}>Ten</option>
-                                            <option value={20}>Twenty</option>
-                                            <option value={30}>Thirty</option>
-
+                                            >
+                                            <MenuItem value='Ten'>Ten</MenuItem>
+                                            <MenuItem value='Twenty'>Twenty</MenuItem>
+                                            <MenuItem value='Thirty'>Thirty</MenuItem>
                                             </Select>
+                                            <FormHelperText>{errors.category}</FormHelperText>
+                                            
+                                        </FormControl>
                                     </Box>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
@@ -234,6 +244,20 @@ const Publish = () => {
                                             fullWidth
                                             variant='outlined'
                                         />
+                                    </Box>
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box className={classes.box}>
+                                        <Typography variant="h6" component="h6" align='left' color='textPrimary'>Price</Typography>
+                                        <br />
+                                        <FormControl fullWidth variant='outlined'>
+                                            <InputLabel >Price</InputLabel>
+                                            <OutlinedInput 
+                                                onChange={handleChange}
+                                                startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                                labelWidth={40}
+                                            />
+                                        </FormControl>
                                     </Box>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
