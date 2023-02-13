@@ -23,9 +23,9 @@ export default function Home() {
     <TemplateDefault>
       <Container maxWidth="sm" >
         <Typography component="h1" variant="h2" align='center'>
-          My ads
+          My Advertisement
         </Typography>
-        <Button variant='contained' color='primary' className={classes.buttonAdd}>Post new Ad</Button>
+        <Button variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
       </Container>
       <Container maxWidth="md" >
         <Grid container spacing={4}>

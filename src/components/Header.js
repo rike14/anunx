@@ -78,10 +78,10 @@ export default function ButtonAppBar() {
               }}
             >
               <Link href="/user/dashboard" passHref className={classes.linkMenu}>
-                <MenuItem>My ads</MenuItem>
+                <MenuItem>My Advertisement</MenuItem>
               </Link>
               <Link href="/user/publish" passHref className={classes.linkMenu}>
-                <MenuItem>Post new ad</MenuItem>
+                <MenuItem>Post new Advertisement</MenuItem>
               </Link>
               <Divider  className={classes.divider}/>
               <MenuItem>Exit</MenuItem>

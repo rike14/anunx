@@ -55,7 +55,7 @@ const List = () => {
                             Advertisements
                         </Typography>
                         <Typography variant="span" component="subtitle2">
-                            FOUND 200 ADS
+                            Found 200 Advertisements
                         </Typography>
                         <br /><br />
                         <Grid container spacing={3}>

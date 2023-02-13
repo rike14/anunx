@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
     Container,
     Typography,
@@ -76,6 +78,13 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
+const validationSchema = yup.object().shape({
+    title: yup.string()
+        .min(6,'Title must be more than six characters')
+        .max(80, 'Title must be less than eighty characters')
+        .required('Title is required'),
+})
+
 
 const Publish = () => {
     const classes = useStyles()
@@ -104,138 +113,168 @@ const Publish = () => {
 
     return (
         <TemplateDefault>
-            <Container maxWidth="sm" >
-                <Typography variant="h2" component="h1" align='center' color='primary'>
-                    Post Ad
-                </Typography>
-                <Typography variant="h5" component="h5" align='center' color='primary'>
-                   The more detailed, better!
-                </Typography>
-            </Container>
-            <Container maxWidth="md" className={classes.boxContainer}>
-                <Box className={classes.box}>
-                    <Typography variant="h6" component="h6" align='left' color='primary'>
-                        Ad Title
-                    </Typography>
-                    <TextField 
-                        label="ex: Bicileta Aro 29 com garantia"
-                        size='small'
-                        fullWidth
-                    />
-                    <br /><br />
-                    <Typography variant="h6" component="h6" color='textPrimary'>
-                        Category
-                    </Typography>
-                    <Select
-                        native
-                        fullWidth
-                        value=""
-                        onChange={() => {}}
-                        inputProps={{
-                            name: 'age',
-                        }}>
-                        <option value="">Select category</option>
-                        <option value={10}>Ten</option>
-                        <option value={20}>Twenty</option>
-                        <option value={30}>Thirty</option>
+            <Formik
+                initialValues={{
+                    title: '',
+                }}
+                validationSchema={validationSchema}
+                onSubmit={(values) => {
+                    console.log('submit', values)
+                }}
 
-                        </Select>
-                </Box>
-            </Container>
-            <Container maxWidth="md" className={classes.boxContainer}>
-                <Box className={classes.box}>
-                    <Typography variant="h6" component="h6" align='left' color='textPrimary'>
-                        Images
-                    </Typography>
-                    <Typography variant="div" component="body2" align='left' color='textPrimary'>
-                        The first image will be the cover
-                    </Typography>
-                    <Box className={classes.thumbsContainer}>
-                        <Box className={classes.dropZone} {...getRootProps()}>
-                            <input {...getInputProps()} />
-                            <Typography variant='body2' color='textPrimary'>
-                                Click here to upload images.
-                            </Typography>
-                        </Box>
-                        {
-                            files.map((file, index) => (
-                            
-                                <Box
-                                    key={file.name}
-                                    className={classes.thumb}
-                                    style={{ backgroundImage: `url(${file.preview})` }}
-                                >   
-                                    {
-                                        index === 0 ?
-                                        <Box className={classes.mainImage}>
-                                            <Typography variant='body1' color='secondary'>
-                                                Main
-                                            </Typography>
-                                        </Box>
-                                        : null
-                                    }
-                                    <Box className={classes.mask}>
-                                        <IconButton color='secondary' onClick={() => handleRemoveFile(file.name)}>
-                                            <DeleteForever fontSize='large'/>
-                                        </IconButton>
+            >
+                {
+                ({
+                    values,
+                    errors,
+                    handleChange,
+                    handleSubmit,
+                }) => {
+                        return (
+                            <form onSubmit={handleSubmit}>
+                                <Container maxWidth="sm" >
+                                    <Typography variant="h2" component="h1" align='center' color='primary'>
+                                        Post Ad
+                                    </Typography>
+                                    <Typography variant="h5" component="h5" align='center' color='primary'>
+                                    The more detailed, better!
+                                    </Typography>
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box className={classes.box}>
+                                        <Typography variant="h6" component="h6" align='left' color='primary'>
+                                            Advertisement Title
+                                        </Typography>
+                                        <TextField 
+                                            name='title'
+                                            value={values.title}
+                                            onChange={handleChange}
+                                            label="ex: Iphone 12 Pro Max 256GB"
+                                            size='small'
+                                            fullWidth
+                                            error={errors.title}
+                                            helperText={errors.title}
+
+                                        />
+                                        <br /><br />
+                                        <Typography variant="h6" component="h6" color='textPrimary'>
+                                            Category
+                                        </Typography>
+                                        <Select
+                                            native
+                                            fullWidth
+                                            value=""
+                                            onChange={() => {}}
+                                            inputProps={{
+                                                name: 'age',
+                                            }}>
+                                            <option value="">Select category</option>
+                                            <option value={10}>Ten</option>
+                                            <option value={20}>Twenty</option>
+                                            <option value={30}>Thirty</option>
+
+                                            </Select>
                                     </Box>
-                                </Box>
-                            ))
-                        }
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box className={classes.box}>
+                                        <Typography variant="h6" component="h6" align='left' color='textPrimary'>
+                                            Images
+                                        </Typography>
+                                        <Typography variant="div" component="body2" align='left' color='textPrimary'>
+                                            The first image will be the cover
+                                        </Typography>
+                                        <Box className={classes.thumbsContainer}>
+                                            <Box className={classes.dropZone} {...getRootProps()}>
+                                                <input {...getInputProps()} />
+                                                <Typography variant='body2' color='textPrimary'>
+                                                    Click here to upload images.
+                                                </Typography>
+                                            </Box>
+                                            {
+                                                files.map((file, index) => (
+                                                
+                                                    <Box
+                                                        key={file.name}
+                                                        className={classes.thumb}
+                                                        style={{ backgroundImage: `url(${file.preview})` }}
+                                                    >   
+                                                        {
+                                                            index === 0 ?
+                                                            <Box className={classes.mainImage}>
+                                                                <Typography variant='body1' color='secondary'>
+                                                                    Main
+                                                                </Typography>
+                                                            </Box>
+                                                            : null
+                                                        }
+                                                        <Box className={classes.mask}>
+                                                            <IconButton color='secondary' onClick={() => handleRemoveFile(file.name)}>
+                                                                <DeleteForever fontSize='large'/>
+                                                            </IconButton>
+                                                        </Box>
+                                                    </Box>
+                                                ))
+                                            }
 
-                    </Box>
-                </Box>
-            </Container>
-            <Container maxWidth="md" className={classes.boxContainer}>
-                <Box className={classes.box}>
-                    <Typography variant="h6" component="h6" align='left' color='textPrimary'>
-                        Description
-                    </Typography>
-                    <Typography variant="div" component="body2" align='left' color='textPrimary'>
-                        Describe your product in detail
-                    </Typography>
-                    <TextField 
-                        minRows={6}
-                        multiline
-                        fullWidth
-                        variant='outlined'
-                    />
-                </Box>
-            </Container>
-            <Container maxWidth="md" className={classes.boxContainer}>
-                <Box className={classes.box}>
-                    <Typography variant="h6" component="h6" align='left' color='textPrimary' gutterBottom>
-                        Contacts
-                    </Typography>
-                    <TextField 
-                        label='Name'
-                        fullWidth
-                        size='small'
-                        variant='outlined'
-                    />
-                    <br /><br />
-                    <TextField 
-                        label='E-mail'
-                        fullWidth
-                        size='small'
-                        variant='outlined'
-                    />
-                    <br /><br />
-                    <TextField 
-                        label='Phone'
-                        fullWidth
-                        size='small'
-                        variant='outlined'
-                    />
-                </Box>
-            </Container>
-            <Container maxWidth="md" className={classes.boxContainer}>
-                <Box textAlign='right'>
-                   <Button variant='contained' color='primary'>
-                        Publish Ad
-                   </Button>
-                </Box>
-            </Container>
+                                        </Box>
+                                    </Box>
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box className={classes.box}>
+                                        <Typography variant="h6" component="h6" align='left' color='textPrimary'>
+                                            Description
+                                        </Typography>
+                                        <Typography variant="div" component="body2" align='left' color='textPrimary'>
+                                            Describe your product in detail
+                                        </Typography>
+                                        <TextField 
+                                            minRows={6}
+                                            multiline
+                                            fullWidth
+                                            variant='outlined'
+                                        />
+                                    </Box>
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box className={classes.box}>
+                                        <Typography variant="h6" component="h6" align='left' color='textPrimary' gutterBottom>
+                                            Contacts
+                                        </Typography>
+                                        <TextField 
+                                            label='Name'
+                                            fullWidth
+                                            size='small'
+                                            variant='outlined'
+                                        />
+                                        <br /><br />
+                                        <TextField 
+                                            label='E-mail'
+                                            fullWidth
+                                            size='small'
+                                            variant='outlined'
+                                        />
+                                        <br /><br />
+                                        <TextField 
+                                            label='Phone'
+                                            fullWidth
+                                            size='small'
+                                            variant='outlined'
+                                        />
+                                    </Box>
+                                </Container>
+                                <Container maxWidth="md" className={classes.boxContainer}>
+                                    <Box textAlign='right'>
+                                    <Button type='submit' variant='contained' color='primary'>
+                                            Publish Ad
+                                    </Button>
+                                    </Box>
+                                </Container>
+                            </form>
+                        )
+                    }
+                }
+            </Formik>
         </TemplateDefault>
     )
 }
