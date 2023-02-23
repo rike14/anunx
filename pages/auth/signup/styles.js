@@ -11,4 +11,8 @@ export default makeStyles((theme) => ({
         backgroundColor: theme.palette.background.white,
         padding: theme.spacing(3),
     },
+    loading: {
+        display: 'block',
+        margin: '10px auto',
+    },
 }));
