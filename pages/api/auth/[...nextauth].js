@@ -1,9 +1,9 @@
 import axios from "axios"
 import NextAuth from "next-auth"
-import GithubProvider from "next-auth/providers/github"
+import Providers from "next-auth/providers"
 export default NextAuth = {
     providers: [
-        CredentialsProvider({
+        Providers.Credentials({
             name: "Credentials",
             async authorize(credentials) {
                const res = axios.post("/api/auth/signin", {
