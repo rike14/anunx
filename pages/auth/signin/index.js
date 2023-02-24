@@ -1,6 +1,7 @@
 import { Formik } from 'formik'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { signIn, useSession } from 'next-auth/client'
 
 import {
   Box,
@@ -23,20 +24,14 @@ const Signin = () => {
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToast()
+  const [ session ] = useSession()
 
   const handleFormSubmit = async values => {
-    const response = await axios.post('/api/users', values)
-
-    if (response.data.success) {
-      setToasty({
-        open: true,
-        message: 'Account created successfully',
-        severity: 'success',
+      signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        callbackUrl: `${window.location.origin}/user/dashboard`,
       })
-
-      router.push('/auth/signin')
-
-    }
   }
 
 
@@ -65,7 +60,11 @@ const Signin = () => {
                 isSubmitting,
               }) => (
                 <form onSubmit={handleSubmit}>
-                
+                  {
+                    router.query.i === '1' 
+                    ? setToasty({ message: 'Invalid email or password', type: 'error' })
+                    : null
+                  }
                   <FormControl fullWidth error={errors.email && touched.email} className={classes.formControl}>
                     <InputLabel className={classes.InputLabel}>Email</InputLabel>
                     <Input

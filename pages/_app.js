@@ -9,7 +9,7 @@ import theme from '../src/theme';
 
 export default function MyApp(props) {
   const { Component, 
-          pageProps: { session, ...pageProps} 
+          pageProps
         } = props;
 
   return (
