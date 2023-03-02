@@ -86,7 +86,7 @@ const Home = () => {
   )
 }
 
-Home.requiresAuth = true
+Home.requireAuth = true
 
 
 export default Home

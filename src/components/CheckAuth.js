@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { HashLoader } from "react-spinners";
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     loading: {
         display: 'flex',
         flexDirection: 'column',
@@ -16,18 +16,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckAuth = ({ Component, pageProps }) => {
-  const [ session ] = useSession();
+    const [ session, loading ] = useSession();
     const router = useRouter();
     const classes = useStyles();
 
   useEffect(() => {
+    if(loading) return;
+    
     if (!session) {
       router.push('/auth/signin');
     }
-  }, [session]);
+  }, [session, loading]);
 
     if (session) {
-        return <Component {...pageProps} />;
+       return <Component {...pageProps} />;
     }
 
     return (
@@ -39,7 +41,6 @@ const CheckAuth = ({ Component, pageProps }) => {
             </Typography>
         </Container>
     );
-
 }
 
 export default CheckAuth;
