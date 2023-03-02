@@ -25,8 +25,8 @@ export default function MyApp(props) {
           <CssBaseline />
           {
             Component.requireAuth
-            ? <Component {...pageProps} />
-            : <CheckAuth Component={Component} pageProps={pageProps}/>
+            ? <CheckAuth Component={Component} pageProps={pageProps} />
+            : <Component {...pageProps} />
           }
           </ToastyProvider>
         </ThemeProvider>
