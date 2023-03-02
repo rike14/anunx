@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Formik } from 'formik'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -30,8 +31,13 @@ const Signin = () => {
       signIn('credentials', {
         email: values.email,
         password: values.password,
-        callbackUrl: `${window.location.origin}/user/dashboard`,
+        callbackUrl: 'http://localhost:3000/user/dashboard',
       })
+  }
+
+  const handleGoogleSignIn = () => {
+    signIn('google', 
+    { callbackUrl: 'http://localhost:3000/user/dashboard' })
   }
 
 
@@ -45,6 +51,30 @@ const Signin = () => {
 
       <Container maxWidth="md" component="main" >
         <Box mt={5}>
+
+          <Box display='flex' justifyContent='center'>
+            <Button 
+              onClick={handleGoogleSignIn} 
+              variant="contained" 
+              color="primary"
+              startIcon={
+                <Image
+                  src="/images/logo_google.svg"
+                  alt="Google"
+                  width={20}
+                  height={20}
+                />
+              }
+            >
+              Enter with Google
+              
+            </Button>
+          </Box>
+
+          <Box className={classes.orSeparator}>
+            <span>or</span>
+          </Box>
+        
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

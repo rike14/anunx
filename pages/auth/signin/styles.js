@@ -15,4 +15,17 @@ export default makeStyles((theme) => ({
         display: 'block',
         margin: '10px auto',
     },
+    orSeparator: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: theme.spacing(7,0,4),
+        width: '100%',
+        height: '1px',
+        backgroundColor: '#e8e8e8',
+        '& span': {
+            padding: '0 30px',
+            backgroundColor: theme.palette.background.white,
+        },
+    }
 }));

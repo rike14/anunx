@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import { signOut, useSession } from 'next-auth/client';
 import { 
   Button, 
   Toolbar,
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  headerButton: {
+    marginRight: theme.spacing(2),
+  },
   link: {
     textDecoration: 'none',
     color: theme.palette.secondary.main,
@@ -40,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ButtonAppBar() {
+  const [session, loading] = useSession();
   const [anchorUserMenu, setAnchorUserMenu] = useState(false);
   const classes = useStyles();
 
@@ -53,21 +58,26 @@ export default function ButtonAppBar() {
             <Typography variant="h6" component="div" className={classes.title}>
               AnunX
             </Typography>
-            <Link href="/user/publish" passHref className={classes.link}>
-            <Button color="inherit" variant='outlined'>
+            <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
+            <Button color="inherit" variant='outlined' className={classes.headerButton}>
               Advertise and Sell
             </Button>
             </Link>
-            <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
-              {
-                true === false ? 
-                <Avatar src=''/>
-                : <AccountCircle />
-              }
-              <Typography className={classes.userName} variant='subtitle2' color='secondary'>
-                Henrique Kronhardt
-              </Typography>
-            </IconButton>
+            {
+              session 
+                ? (
+                  <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
+                    {
+                      session.user.image ? 
+                      <Avatar src={session.user.image}/>
+                      : <AccountCircle />
+                    }
+                    <Typography className={classes.userName} variant='subtitle2' color='secondary'>
+                     {session.user.name}
+                    </Typography>
+                  </IconButton>
+                ) : null
+            }
             <Menu
               anchorEl={anchorUserMenu}
               open={openUserMenu}
@@ -84,7 +94,7 @@ export default function ButtonAppBar() {
                 <MenuItem>Post new Advertisement</MenuItem>
               </Link>
               <Divider  className={classes.divider}/>
-              <MenuItem>Exit</MenuItem>
+              <MenuItem onClick={() => signOut({ callbackUrl: '/' })} >Logout</MenuItem>
             </Menu>
           </Toolbar>
         </Container>
