@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { Formik } from 'formik'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { signIn, useSession } from 'next-auth/client'
 
@@ -27,6 +26,12 @@ const Signin = ({ APP_URL }) => {
   const { setToasty } = useToast()
   const [ session ] = useSession()
 
+  const handleGoogleLogin = () => {
+    signIn('google', {
+      callbackUrl: `${APP_URL}/user/dashboard`
+    })
+  }
+
   const handleFormSubmit = async values => {
       signIn('credentials', {
         email: values.email,
@@ -35,10 +40,6 @@ const Signin = ({ APP_URL }) => {
       })
   }
 
-  const handleGoogleSignIn = () => {
-    signIn('google', 
-      { callbackUrl: `${APP_URL}/user/dashboard` })
-  }
 
 
   return (
@@ -54,17 +55,17 @@ const Signin = ({ APP_URL }) => {
 
           <Box display='flex' justifyContent='center'>
             <Button 
-              onClick={handleGoogleSignIn} 
               variant="contained" 
               color="primary"
               startIcon={
                 <Image
-                  src="/images/logo_google.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
+                src="/images/logo_google.svg"
+                alt="Google"
+                width={20}
+                height={20}
                 />
               }
+              onClick={handleGoogleLogin} 
             >
               Enter with Google
               
