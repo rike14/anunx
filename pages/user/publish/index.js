@@ -1,4 +1,6 @@
 import { Formik } from 'formik';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 import {
     Container,
     Typography,
@@ -16,6 +18,8 @@ import {
 import TemplateDefault from '../../../src/templates/Default'
 import {initialValues, validationSchema} from './formValues'
 import FileUpload from '../../../src/components/fileUpload'
+import useToasty from '../../../src/contexts/Toasty'
+
 
 import useStyles from './styles'
 
@@ -23,6 +27,44 @@ import useStyles from './styles'
 
 const Publish = () => {
     const classes = useStyles()
+    const router = useRouter()
+    const {setToast} = useToasty()
+
+    const handleSuccess = () => {
+        setToast({
+            open: true,
+            severity: 'success',
+            message: 'Product published successfully'
+        })
+        router.push('/user/dashboard')
+    }
+
+    const handleError = () => {
+        setToast({
+            open: true,
+            severity: 'error',
+            message: 'Something went wrong'
+        })
+    }
+
+    const handleFormSubmit = (values) => {
+        const formData = new FormData()
+
+        for(let field in values){
+            if(field === 'files'){
+                values.files.forEach(file => {
+                    formData.append('files', file)
+                })
+            }else{
+                formData.append(field, values[field])
+            }
+        }
+
+        axios.post('/api/products', formData)
+            .then(handleSuccess)
+            .catch(handleError)
+        
+    }
 
 
     return (
@@ -30,10 +72,7 @@ const Publish = () => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(values) => {
-                    console.log('submit', values)
-                }}
-
+                onSubmit={handleFormSubmit}
             >
                 {
                 ({

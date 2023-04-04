@@ -1,5 +1,5 @@
 import { useContext, createContext, useState } from "react"
-import Toasty from "../components/Toast"
+import Toasty from "../components/Toasty"
 
 const ToastyContext = createContext({})
 
