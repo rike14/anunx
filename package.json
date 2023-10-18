@@ -17,6 +17,7 @@
     "formidable": "^1.2.2",
     "formidable-serverless": "^1.1.1",
     "formik": "^2.2.9",
+    "mongodb": "^3.7.4",
     "mongoose": "^5.13.3",
     "next": "11.0.1",
     "next-auth": "^3.27.3",
