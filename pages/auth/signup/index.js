@@ -1,3 +1,4 @@
+import * as yup from 'yup';
 import { Formik } from 'formik'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -13,11 +14,55 @@ import {
     Typography,
     CircularProgress,
 } from '@material-ui/core'
+import { makeStyles } from "@material-ui/core";
 
 import TemplateDefault from '../../../src/templates/Default'
-import { initialValues, validationSchema } from './formValues'
 import useToast from '../../../src/contexts/Toasty'
-import useStyles from './styles'
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    box: {
+        backgroundColor: theme.palette.background.white,
+        padding: theme.spacing(3),
+    },
+    loading: {
+        display: 'block',
+        margin: '10px auto',
+    },
+}));
+
+
+const initialValues = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+}
+
+const validationSchema = yup.object().shape({
+    name: yup.string()
+        .min(6, 'Name must be at least 6 characters')
+        .required('Name is required'),
+
+    email: yup.string()
+        .email('Email is invalid')
+        .required('Email is required'),
+
+    password: yup.string()
+        .min(6, 'Password must be at least 6 characters')
+        .required('Password is required'),
+
+    confirmPassword: yup.string()
+        .oneOf([yup.ref('password'), null], 'Passwords must match')
+        .required('Confirm Password is required'),
+
+})
+
 
 const Signup = () => {
     const classes = useStyles()

@@ -1,4 +1,5 @@
 import { Formik } from 'formik';
+import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import {
@@ -14,16 +15,73 @@ import {
     InputAdornment,
     Input,
 }   from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
 import TemplateDefault from '../../../src/templates/Default'
-import {initialValues, validationSchema} from './formValues'
 import FileUpload from '../../../src/components/fileUpload'
 import useToasty from '../../../src/contexts/Toasty'
 
 
-import useStyles from './styles'
+
+const useStyles = makeStyles((theme) => ({
+
+    boxContainer: {
+        padding: theme.spacing(3),
+    },
+    box: {
+        backgroundColor: theme.palette.background.white,
+        padding: theme.spacing(3),
+    },
+    inputLabel: {
+        color: theme.palette.text.primary,
+        fontWeight: 400,
+    },
+}))
 
 
+
+const initialValues = {
+    title: '',
+    category: '',
+    description: '',
+    price: '',
+    email: '',
+    name: '',
+    phone: '',
+    files: [],
+}
+
+const validationSchema = yup.object().shape({
+    title: yup.string()
+        .min(6, 'Title must be more than six characters')
+        .max(80, 'Title must be less than eighty characters')
+        .required('Title is required'),
+
+    category: yup.string()
+        .required('Category is required'),
+
+    description: yup.string()
+        .min(50, 'Description must be more than fifty characters')
+        .required('Description is required'),
+
+    price: yup.number()
+        .required('Price is required'),
+
+    email: yup.string()
+        .email('Email is invalid')
+        .required('Email is required'),
+
+    name: yup.string()
+        .required('Name is required'),
+
+    phone: yup.number()
+        .required('Number is required'),
+
+    files: yup.array()
+        .min(1, 'At least one image is required')
+        .required('Images are required'),
+
+}) 
 
 const Publish = () => {
     const classes = useStyles()

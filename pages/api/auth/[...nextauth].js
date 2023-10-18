@@ -12,7 +12,7 @@ export default NextAuth({
         Providers.Credentials({
             name: 'Credentials',
             async authorize(credentials) {
-                const res = await axios.post(`${process.env.APP_URL}/api/auth/signin`, credentials)
+                const res = await axios.post(`${process.env.NEXTAUTH_URL}/api/auth/signin`, credentials)
 
                 const user = res.data
 
@@ -31,7 +31,22 @@ export default NextAuth({
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_TOKEN,
+    },
+
+    callbacks: {
+        async jwt(token, user) {
+            if (user) {
+                token.uid = user.id;
+            }
+
+            return Promise.resolve(token)
+        },
+
+        async session(session, user) {
+            session.userId = user.uid
+            return session
+        }
     },
 
     database: process.env.MONGODB_URI,
