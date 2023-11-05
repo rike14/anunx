@@ -31,7 +31,7 @@ export default NextAuth({
     },
 
     jwt: {
-        secret: process.env.JWT_TOKEN,
+        secret: process.env.JWT_SECRET,
     },
 
     callbacks: {

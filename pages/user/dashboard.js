@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
   buttonAdd: {
     margin: '30px auto',
     display: 'block',
+    width: 300,
+    textAlign: 'center',
   },
 }))
 
@@ -25,7 +27,7 @@ const Home = () => {
         <Typography component="h1" variant="h2" align='center'>
           My Advertisement
         </Typography>
-        <Button variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
+        <Button href="/user/publish" variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
       </Container>
       <Container maxWidth="md" >
         <Grid container spacing={4}>

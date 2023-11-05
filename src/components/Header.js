@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, { useState } from 'react';
 import { signOut, useSession } from 'next-auth/client';
 import { 
   Button, 
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer',
   },
   headerButton: {
     marginRight: theme.spacing(2),
@@ -55,9 +56,11 @@ export default function ButtonAppBar() {
       <AppBar position="static"  elevation={3}>
         <Container maxWidth="lg">
           <Toolbar>
-            <Typography variant="h6" component="div" className={classes.title}>
-              AnunX
-            </Typography>
+            <Link href="/" passHref className={classes.link}>
+              <Typography variant="h6" component="div" className={classes.title}>
+                AnunX
+              </Typography>
+            </Link>
             <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
               Advertise and Sell
@@ -76,7 +79,11 @@ export default function ButtonAppBar() {
                      {session.user.name}
                     </Typography>
                   </IconButton>
-                ) : null
+              ) : <Link href={'/auth/signup'} passHref className={classes.link}>
+                <Button color="inherit" variant='outlined' className={classes.headerButton}>
+                  Signup
+                </Button>
+              </Link>
             }
             <Menu
               anchorEl={anchorUserMenu}

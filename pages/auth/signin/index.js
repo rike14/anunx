@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { Formik } from 'formik'
 import { useRouter } from 'next/router'
 import { signIn, useSession } from 'next-auth/client'
+import Link from 'next/link';
 
 import {
   Box,
@@ -66,7 +67,7 @@ const validationSchema = yup.object().shape({
     .required('Password is required'),
 })
 
-const Signin = ({ APP_URL }) => {
+const Signin = ({ NEXTAUTH_URL }) => {
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToast()
@@ -74,7 +75,7 @@ const Signin = ({ APP_URL }) => {
 
   const handleGoogleLogin = () => {
     signIn('google', {
-      callbackUrl: `${APP_URL}/user/dashboard`
+      callbackUrl: `${NEXTAUTH_URL}/user/dashboard`
     })
   }
 
@@ -82,7 +83,7 @@ const Signin = ({ APP_URL }) => {
       signIn('credentials', {
         email: values.email,
         password: values.password,
-        callbackUrl: `${APP_URL}/user/dashboard`,
+        callbackUrl: `${NEXTAUTH_URL}/user/dashboard`,
       })
   }
 
@@ -182,6 +183,18 @@ const Signin = ({ APP_URL }) => {
               )
             }
           </Formik>
+          <Typography align='center' style={{marginTop: 10}}>
+            Don't have an account?
+          </Typography>
+          <Link href={'/auth/signup'} passHref>
+            <Button fullWidth
+              variant="contained"
+              color="primary" 
+              
+            >
+              Signup
+            </Button>
+          </Link>
         </Box>
       </Container>
     </TemplateDefault>
@@ -190,7 +203,7 @@ const Signin = ({ APP_URL }) => {
 
 Signin.getInitialProps = async function () {
   return {
-    APP_URL: process.env.APP_URL
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL
   }
 }
 

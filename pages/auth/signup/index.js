@@ -2,6 +2,7 @@ import * as yup from 'yup';
 import { Formik } from 'formik'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import Link from 'next/link';
 
 import { 
     Box, 
@@ -174,6 +175,17 @@ const Signup = () => {
                             )
                         }
                     </Formik>
+                    <Typography align='center' style={{ marginTop: 10 }}>
+                        Already have an account?
+                    </Typography>
+                    <Link href={'/auth/signin'} passHref>
+                        <Button fullWidth
+                            variant="contained"
+                            color="primary"
+                        >
+                            Signin
+                        </Button>
+                    </Link>
                 </Box>
             </Container>
         </TemplateDefault>
