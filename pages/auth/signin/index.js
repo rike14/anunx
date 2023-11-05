@@ -184,7 +184,7 @@ const Signin = ({ NEXTAUTH_URL }) => {
             }
           </Formik>
           <Typography align='center' style={{marginTop: 10}}>
-            Don't have an account?
+            Dont have an account?
           </Typography>
           <Link href={'/auth/signup'} passHref>
             <Button fullWidth
