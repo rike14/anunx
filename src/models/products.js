@@ -10,6 +10,10 @@ const schema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter a title'],
     },
+    category: {
+        type: String,
+        required: [true, 'Please enter a category'],
+    },
     description: {
         type: String,
         required: [true, 'Please enter a description'],
@@ -18,16 +22,12 @@ const schema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please enter a price'],
     },
-    category: {
-        type: String,
-        required: [true, 'Please enter a category'],
-    },
     user: {
         id: String,
         name: String,
         email: String,
         phone: String,
-        Image: String,
+        image: String,
     },
     files: {
         type: [filesSchema],

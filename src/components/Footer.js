@@ -23,7 +23,7 @@ const Footer = () => {
     return (
         <Container maxWidth="lg" component='footer' className={classes.footer}> 
             <Grid container spacing={3}>
-                <Grid item sm={6} md={3}>
+                <Grid item xs={6} sm={6} md={3}>
                     <Box textAlign='center'>
                         <Link href='#' passHref className={classes.footerLink}>
                             <Typography color="textSecondary" variant="subtitle1">
@@ -32,7 +32,7 @@ const Footer = () => {
                         </Link> 
                     </Box>
                 </Grid>
-                <Grid item sm={6} md={3}>
+                <Grid item xs={6} sm={6} md={3}>
                     <Box textAlign='center'>
                         <Link href='#' passHref className={classes.footerLink}>
                             <Typography color="textSecondary" variant="subtitle1">
@@ -41,16 +41,16 @@ const Footer = () => {
                         </Link> 
                     </Box>
                 </Grid>
-                <Grid item sm={6} md={3}>
+                <Grid item xs={6} sm={6} md={3}>
                     <Box textAlign='center'>
-                        <Link href='#' passHref className={classes.footerLink}>
+                        <Link href='/user/publish' passHref className={classes.footerLink}>
                             <Typography color="textSecondary" variant="subtitle1">
                                 Advertise and Sell
                             </Typography>
                         </Link> 
                     </Box>
                 </Grid>
-                <Grid item sm={6} md={3}>
+                <Grid item xs={6} sm={6} md={3}>
                     <Box textAlign='center'>
                         <Link href='#' passHref className={classes.footerLink}>
                             <Typography color="textSecondary" variant="subtitle1">

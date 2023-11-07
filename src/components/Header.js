@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
   headerButton: {
     marginRight: theme.spacing(2),
+    "@media (max-width: 520px)": {
+      display: 'none',
+    }
   },
   link: {
     textDecoration: 'none',
@@ -42,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     margin: theme.spacing(1, 0),
   }
+  
 }));
 
 export default function ButtonAppBar() {

@@ -2,6 +2,8 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/client';
+
 import {
     Container,
     Typography,
@@ -14,11 +16,12 @@ import {
     InputLabel,
     InputAdornment,
     Input,
+    CircularProgress,
 }   from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
 
+import { makeStyles } from '@material-ui/core/styles'
 import TemplateDefault from '../../../src/templates/Default'
-import FileUpload from '../../../src/components/fileUpload'
+import FileUpload from '../../../src/components/FileUpload'
 import useToasty from '../../../src/contexts/Toasty'
 
 
@@ -61,7 +64,7 @@ const validationSchema = yup.object().shape({
         .required('Category is required'),
 
     description: yup.string()
-        .min(50, 'Description must be more than fifty characters')
+        .min(20, 'Description must be more than twenty characters')
         .required('Description is required'),
 
     price: yup.number()
@@ -83,13 +86,20 @@ const validationSchema = yup.object().shape({
 
 }) 
 
-const Publish = () => {
+const Publish = ({ userId, image }) => {
     const classes = useStyles()
     const router = useRouter()
-    const {setToast} = useToasty()
+    const { setToasty } = useToasty()
+
+    const formValues = {
+        ...initialValues,
+    }
+
+    formValues.userId = userId
+    formValues.image = image
 
     const handleSuccess = () => {
-        setToast({
+        setToasty({
             open: true,
             severity: 'success',
             message: 'Product published successfully'
@@ -98,7 +108,7 @@ const Publish = () => {
     }
 
     const handleError = () => {
-        setToast({
+        setToasty({
             open: true,
             severity: 'error',
             message: 'Something went wrong'
@@ -128,7 +138,7 @@ const Publish = () => {
     return (
         <TemplateDefault>
             <Formik
-                initialValues={initialValues}
+                initialValues={formValues}
                 validationSchema={validationSchema}
                 onSubmit={handleFormSubmit}
             >
@@ -140,18 +150,21 @@ const Publish = () => {
                     handleChange,
                     handleSubmit,
                     setFieldValue,
+                    isSubmitting,
                 }) => {
                     
                        
 
                         return (
                             <form onSubmit={handleSubmit}>
+                                <Input type='hidden' name='userId' value={values.userId} />
+                                <Input type='hidden' name='image' value={values.image} />
                                 <Container maxWidth="sm" >
                                     <Typography variant="h2" component="h1" align='center' color='primary'>
                                         Post Ad
                                     </Typography>
                                     <Typography variant="h5" component="h5" align='center' color='primary'>
-                                    The more detailed, better!
+                                        The more detailed, better!
                                     </Typography>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
@@ -174,9 +187,9 @@ const Publish = () => {
                                             onChange={handleChange}
                                             fullWidth
                                             >
-                                            <MenuItem value='Ten'>Ten</MenuItem>
-                                            <MenuItem value='Twenty'>Twenty</MenuItem>
-                                            <MenuItem value='Thirty'>Thirty</MenuItem>
+                                            <MenuItem value='Notebook'>Notebook</MenuItem>
+                                            <MenuItem value='Cell Phone'>Cell phone</MenuItem>
+                                            <MenuItem value='Video game'>Video game</MenuItem>
                                             </Select>
                                             <FormHelperText>{errors.category && touched.category  ? errors.category : null }</FormHelperText>
                                         </FormControl>
@@ -261,11 +274,14 @@ const Publish = () => {
                                     </Box>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
-                                    <Box textAlign='right'>
-                                    <Button type='submit' variant='contained' color='primary'>
-                                            Publish Ad
-                                    </Button>
-                                    </Box>
+                                    {
+                                        isSubmitting 
+                                        
+                                            ? <CircularProgress />
+                                            : <Button type='submit' variant='contained' color='primary'>
+                                                Publish Ad
+                                              </Button>
+                                    }
                                 </Container>
                             </form>
                         )
@@ -277,5 +293,16 @@ const Publish = () => {
 }
 
 Publish.requireAuth = true
+
+export async function getServerSideProps({ req }) {
+    const { userId, user} = await getSession({ req })
+
+    return {
+        props: {
+            userId,
+            image: user.image,
+        }
+    }
+}
 
 export default Publish
