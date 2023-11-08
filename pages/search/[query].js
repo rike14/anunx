@@ -105,7 +105,7 @@ const Search = ({ q, products }) => {
                             Advertisements
                         </Typography>
                         <Typography variant="span" component="subtitle2">
-                            Found {products.length } Advertisements for "{q}"
+                            Found {products.length} Advertisements for  &quot; {q} &quot;
                         </Typography>
                         <br /><br />
                         <Grid container spacing={4}>

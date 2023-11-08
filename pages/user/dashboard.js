@@ -98,7 +98,7 @@ const Home = ({ products }) => {
         <DialogTitle >Are you sure do you want to remove this ad?</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            This action can't be undone.
+            This action can&apos;t be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
