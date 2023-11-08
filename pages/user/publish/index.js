@@ -21,7 +21,7 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles'
 import TemplateDefault from '../../../src/templates/Default'
-import FileUpload from '../../../src/components/FileUpload/index'
+import FileUpload from '../../../src/components/FileUpload'
 import useToasty from '../../../src/contexts/Toasty'
 
 
