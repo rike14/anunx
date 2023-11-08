@@ -72,7 +72,7 @@ const post = (async (req, res) => {
                 name,
                 email,
                 phone,
-                image,
+                image: image == 'null' ? null : image,
                 city,
             },
             files: filesToSave,

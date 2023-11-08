@@ -293,7 +293,7 @@ const Publish = ({ userId, image }) => {
                                         
                                             ? <CircularProgress />
                                             : <Button type='submit' variant='contained' color='primary'>
-                                                Publish Ad
+                                                Publish
                                               </Button>
                                     }
                                 </Container>

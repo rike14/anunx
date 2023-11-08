@@ -1,5 +1,6 @@
 import dbConnect from '../../src/utils/dbConnect'
 import axios from 'axios'
+import slugify from 'slugify'
 import { forwardRef, useState } from 'react'
 import { getSession } from 'next-auth/client'
 import ProductsModel from '../../src/models/products'
@@ -128,6 +129,8 @@ const Home = ({ products }) => {
           {
             products.map((product, key) => {
               if(removeProducts.includes(product._id)) return null
+              const category = slugify(product.category, { lower: true });
+              const title = slugify(product.title, { lower: true });
 
               return (
               <Grid item xs={12} sm={6} md={4} key={key}>
@@ -141,7 +144,7 @@ const Home = ({ products }) => {
                         size='small' 
                         color='primary'
                         variant="contained"
-                        href={`/user/edit/${product._id}`}
+                        href={`/${category}/${title}/${product._id}`}
                         startIcon={<EditIcon />}
                       >
                         Edit

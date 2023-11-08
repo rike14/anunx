@@ -94,6 +94,13 @@ const Home = ({ products }) => {
                     Highlights
                 </Typography>
                 <br />
+                {
+                    products.length === 0 && (
+                        <Typography component="div" variant="body1" align='center' gutterBottom>
+                            No products found.
+                        </Typography>
+                    )
+                }
                 <Grid container spacing={4}>
                     {
                         products.map((product, key) => {

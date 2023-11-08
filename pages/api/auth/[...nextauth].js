@@ -37,7 +37,7 @@ export default NextAuth({
     callbacks: {
         async jwt(token, user) {
             if (user) {
-                token.uid = user.id;
+                token.uid = user._id || user.id;
             }
 
             return Promise.resolve(token)

@@ -1,6 +1,7 @@
 import dbConnect from '../../../src/utils/dbConnect'
 import ProductsModel from '../../../src/models/products'
 import { 
+    Button,
     Avatar, 
     Box, 
     Card, 
@@ -29,11 +30,17 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold',
         marginBottom: '15px',
     },
-    card: {
-        height: '100%',
-    },
     cardMedia: {
-        paddingTop: '56.25%', // 16:9
+        paddingTop: '100%',
+        
+    },
+    carousel: {
+        '& .CarouselItem': {
+            height: '100%',
+            width: '70%',
+            margin: 'auto',
+            marginBottom: '20px',
+        }
     },
 }));
 
@@ -46,22 +53,21 @@ const formatDate = (date) => {
 
 const Product = ({ product }) => {
     const classes = useStyles();
-
     return (
         <TemplateDefault >
             <Container maxWidth='lg'>
                 <Grid container spacing={3}>
-                    <Grid item xs={8}>
-                        <Box className={classes.box}>
+                    <Grid item xs={12} sm={8} >
+                        <Box className={classes.box} textAlign='center'>
                             <Carousel
-                                autoPlay={false}
-                                animation='slide'
-                                navButtonsProps={{
-                                    style: {
-                                        color: '#fff',
-                                    }
-                                }}
-
+                                autoPlay={true}
+                                stopAutoPlayOnHover={true}
+                                interval={5000}
+                                animation='fade'
+                                timeout={700}
+                                navButtonsAlwaysVisible={false}
+                                navButtonsProps={{ style: { color: '#fff', background: '#000' } }}
+                                className={classes.carousel}  
                             >
                                 {
                                     product.files.map((file, index) => (
@@ -88,8 +94,8 @@ const Product = ({ product }) => {
                         </Box>
                     </Grid>
 
-                    <Grid item xs={4}>
-                       <Card elevation={0} className={classes.box}>
+                    <Grid item xs={12} sm={4}>
+                       <Card elevation={1} className={classes.box}>
                          <CardHeader 
                          title={product.user.name} 
                          subheader={product.user.email}
@@ -98,7 +104,7 @@ const Product = ({ product }) => {
                                 src={product.user.image}
                                 alt={product.user.name}
                             >
-                                { product.user.image || product.user.name[0].toUpperCase()}
+                                 {product.user.image || product.user.name[0].toUpperCase()}
                             </Avatar>
                          }
                          />
@@ -107,7 +113,6 @@ const Product = ({ product }) => {
                             title={product.user.name}
                          />
                        </Card>
-                       
                        <Box className={classes.box} >
                             <Typography variant='h6' component='h6' >City</Typography>
                             <Typography variant='body1' component='h6' >
@@ -115,8 +120,10 @@ const Product = ({ product }) => {
                             </Typography>
                        </Box>
                        
+                       
                     </Grid>
                 </Grid>
+                <Button href="/user/dashboard" variant='contained' color='primary' >Back</Button>
             </Container>
         </TemplateDefault>
     )
