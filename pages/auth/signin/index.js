@@ -71,7 +71,6 @@ const Signin = ({ NEXTAUTH_URL }) => {
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToast()
-  const [ session ] = useSession()
 
   const handleGoogleLogin = () => {
     signIn('google', {

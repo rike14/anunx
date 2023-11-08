@@ -1,4 +1,12 @@
+import dbConnect from '../src/utils/dbConnect';
+import ProductsModel from '../src/models/products';
+import axios from 'axios';
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import slugify from 'slugify';
 import {  
+    CircularProgress,
     Container, 
     Grid, 
     IconButton, 
@@ -10,6 +18,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import TemplateDefault from '../src/templates/Default';
 import Card from '../src/components/Card';
+import { formatCurrency } from '../src/utils/currency';
+import useToast from '../src/contexts/Toasty';
 
 const useStyles = makeStyles((theme) => ({
     searchBox: {
@@ -21,10 +31,42 @@ const useStyles = makeStyles((theme) => ({
     cardGrid: {
         marginTop: 50,
     },
+    productLink: {
+        textDecoration: 'none !important',
+    },
+    loading: {
+        display: 'block',
+        margin: '10px auto',
+    },
 }));
 
-const Home = () => {
+const Home = ({ products }) => {
     const classes = useStyles();
+    const router = useRouter();
+    const { setToasty } = useToast();
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmitSearch = () => {
+        setLoading(true);
+        axios.get('/api/products/search?query=' + search)
+            .then(() => {
+                setLoading(false);
+                router.push(`/search/${search}`);
+            })
+            .catch(() => {
+                setLoading(false);
+                setToasty({
+                    open: true,
+                    message: 'Error when searching for products',
+                    severity: 'error',
+                })
+            })
+    }
+
+    const handleChangeSearch = (e) => {
+        setSearch(e.target.value);
+    }
 
     return (
         <TemplateDefault>
@@ -34,12 +76,16 @@ const Home = () => {
                 </Typography>
                 <Paper className={classes.searchBox}>
                     <InputBase
+                        onChange={handleChangeSearch}
                         placeholder='Ex: Iphone, Playstation, etc...'
                         fullWidth
                     />
-                    <IconButton>
-                        <SearchIcon />
-                    </IconButton>
+                    {
+                        loading ? <CircularProgress size={15} className={classes.loading} /> : 
+                        <IconButton onClick={handleSubmitSearch}>
+                            <SearchIcon color='primary' />
+                        </IconButton>
+                    }
                 </Paper>
             </Container>
 
@@ -49,31 +95,43 @@ const Home = () => {
                 </Typography>
                 <br />
                 <Grid container spacing={4}>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            image={'https://source.unsplash.com/random'}
-                            title="Product X"
-                            subtitle='$ 60,00'
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            image={'https://source.unsplash.com/random'}
-                            title="Product Z"
-                            subtitle='$ 80,00'
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            image={'https://source.unsplash.com/random'}
-                            title="Product Y"
-                            subtitle='$ 40,00'
-                        />
-                    </Grid>
+                    {
+                        products.map((product, key) => {
+                            const category = slugify(product.category, { lower: true });
+                            const title = slugify(product.title, { lower: true });
+                            return (
+                                <Grid item key={key} xs={12} sm={6} md={4}>
+                                    <Link href={`/${category}/${title}/${product._id}`} >
+                                        <a className={classes.productLink}>
+                                            <Card
+                                                
+                                                image={`/uploads/${product.files[0].name}`}
+                                                title={product.title}
+                                                subtitle={formatCurrency(product.price)}
+                                            />
+                                        </a>
+                                    </Link>
+                                </Grid>
+                            )
+                        })
+                    }
                 </Grid>
             </Container>
         </TemplateDefault>
     )
+}
+
+export async function getServerSideProps() {
+    await dbConnect()
+
+    const products = await ProductsModel.aggregate([{
+        $sample: { size: 6 }
+    }]);
+    return {
+        props: {
+            products: JSON.parse(JSON.stringify(products)),
+        },
+    }
 }
     
 export default Home;

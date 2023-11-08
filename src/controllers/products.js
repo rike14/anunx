@@ -102,7 +102,25 @@ const remove = (async (req, res) => {
     return res.status(200).json({ message: 'success' })
 })
 
+const get = (async (req, res) => {
+    await dbConnect()
+    
+    const query  = req.query.query
+
+    const products = await ProductsModel.find({
+        $or: [
+            { title: { $regex: query, $options: 'i' } },
+            { description: { $regex: query, $options: 'i' } },
+        ]
+    })
+
+    if (!products) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ products })
+})
+
 export { 
     post,
     remove,
+    get,
  }
