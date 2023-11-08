@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     }
   },
+  buttonSignup: {
+    marginRight: theme.spacing(2),
+  },
   link: {
     textDecoration: 'none',
     color: theme.palette.secondary.main,
@@ -84,7 +87,7 @@ export default function ButtonAppBar() {
                     </Typography>
                   </IconButton>
               ) : <Link href={'/auth/signup'} passHref className={classes.link}>
-                <Button color="inherit" variant='outlined' className={classes.headerButton}>
+                <Button color="inherit" variant='outlined' className={classes.buttonSignup}>
                   Signup
                 </Button>
               </Link>

@@ -51,6 +51,7 @@ const initialValues = {
     email: '',
     name: '',
     phone: '',
+    city: '',
     files: [],
 }
 
@@ -78,7 +79,10 @@ const validationSchema = yup.object().shape({
         .required('Name is required'),
 
     phone: yup.number()
-        .required('Number is required'),
+        .required('Phone is required'),
+    
+    city: yup.string()
+        .required('City is required'),
 
     files: yup.array()
         .min(1, 'At least one image is required')
@@ -128,7 +132,7 @@ const Publish = ({ userId, image }) => {
             }
         }
 
-        axios.post('/api/products', formData)
+        axios.post('/api/products/post', formData)
             .then(handleSuccess)
             .catch(handleError)
         
@@ -270,6 +274,16 @@ const Publish = ({ userId, image }) => {
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.phone && touched.phone  ? errors.phone : null }</FormHelperText>
+                                        </FormControl>
+                                        <br /><br />
+                                        <FormControl error={errors.city && touched.city} fullWidth>
+                                            <InputLabel className={classes.inputLabel}>City</InputLabel>
+                                            <Input 
+                                                name='city'
+                                                value={values.city}
+                                                onChange={handleChange}
+                                            />
+                                            <FormHelperText>{errors.city && touched.city ? errors.city : null }</FormHelperText>
                                         </FormControl>
                                     </Box>
                                 </Container>

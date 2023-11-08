@@ -32,8 +32,8 @@ const post = (async (req, res) => {
 
             const filename = `${timestamp}-${random}-${extension}`
 
-            const oldPath = path.join(__dirname, '../../../../' + file.path)
-            const newPath = path.join(__dirname, '../../../../' + form.uploadDir + '/' + filename)
+            const oldPath = path.join(__dirname, `../../../../../${file.path}`)
+            const newPath = path.join(__dirname, `../../../../../${form.uploadDir}/${filename}`)
 
             filesToSave.push({ 
                 name: filename, 
@@ -59,6 +59,7 @@ const post = (async (req, res) => {
             phone,
             userId,
             image,
+            city,
         } = fields
 
         const product = new ProductsModel({
@@ -72,12 +73,14 @@ const post = (async (req, res) => {
                 email,
                 phone,
                 image,
+                city,
             },
             files: filesToSave,
+            date : Date.now(),
         })
 
         const savedProduct = await product.save()
-        
+
         if(!savedProduct) return res.status(500).json({ message: 'error' })
 
         return res.status(201).json({ message: 'success' })
@@ -87,4 +90,19 @@ const post = (async (req, res) => {
    
 })
 
-export { post }
+const remove = (async (req, res) => {
+    await dbConnect()
+
+    const id  = req.body.id
+    
+    const deleted = await ProductsModel.findOneAndRemove({ _id: id })
+
+    if (!deleted) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ message: 'success' })
+})
+
+export { 
+    post,
+    remove,
+ }

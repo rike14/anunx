@@ -28,12 +28,17 @@ const schema = new mongoose.Schema({
         email: String,
         phone: String,
         image: String,
+        city: String,
     },
     files: {
         type: [filesSchema],
         default: undefined,
         required: [true, 'Please add at least one file'],
-    }
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 export default mongoose.models.products || mongoose.model('products', schema);
