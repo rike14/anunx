@@ -131,8 +131,7 @@ const Home = ({ products }) => {
 export async function getServerSideProps() {
     await dbConnect()
 
-    const products = await ProductsModel.find().limit(6);
-    // const products = await ProductsModel.aggregate([{ $limit: 6 }])
+    const products = await ProductsModel.aggregate([{ $limit: 6 }])
     return {
         props: {
             products: JSON.parse(JSON.stringify(products)),
