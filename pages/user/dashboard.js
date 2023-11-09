@@ -112,7 +112,7 @@ const Home = ({ products }) => {
         </DialogActions>
       </Dialog>
       <Container maxWidth="sm" align='center' >
-        <Typography component="h1" variant="h2" align='center'>
+        <Typography component="h1" variant="h4" align='center'>
           My Advertisement
         </Typography>
         <Button href="/user/publish" variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>

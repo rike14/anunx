@@ -16,13 +16,13 @@ import {
     makeStyles, 
     Paper, 
     Typography,
-    CircularProgress,
 } from "@material-ui/core";
 
 import TemplateDefault from "../../src/templates/Default";
 import Card from "../../src/components/Card";
 import { formatCurrency } from "../../src/utils/currency";
 import useToasty from "../../src/contexts/Toasty";
+import Loading from "../../src/components/Loading";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -90,7 +90,7 @@ const Search = ({ q, products }) => {
                                 fullWidth
                             />
                             {
-                                loading ? <CircularProgress size={15} className={classes.loading} /> :
+                                loading ? <Loading /> :
                                     <IconButton onClick={handleSubmitSearch}>
                                         <SearchIcon color='primary' />
                                     </IconButton>
@@ -104,7 +104,7 @@ const Search = ({ q, products }) => {
                         <Typography variant="h6" component="h6">
                             Advertisements
                         </Typography>
-                        <Typography variant="span" component="subtitle2">
+                        <Typography variant="body1" component="subtitle2">
                             Found {products.length} Advertisements for  &quot; {q} &quot;
                         </Typography>
                         <br /><br />

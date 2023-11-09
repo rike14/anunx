@@ -164,7 +164,7 @@ const Publish = ({ userId, image }) => {
                                 <Input type='hidden' name='userId' value={values.userId} />
                                 <Input type='hidden' name='image' value={values.image} />
                                 <Container maxWidth="sm" >
-                                    <Typography variant="h2" component="h1" align='center' color='primary'>
+                                    <Typography variant="h4" component="h1" align='center' color='primary'>
                                         Post Ad
                                     </Typography>
                                     <Typography variant="h5" component="h5" align='center' color='primary'>

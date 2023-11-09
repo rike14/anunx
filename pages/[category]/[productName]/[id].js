@@ -82,7 +82,7 @@ const Product = ({ product }) => {
                             </Carousel>
                         </Box>
                         <Box className={classes.box} textAlign='left'>   
-                            <Typography variant='span' component='caption' display='inline' >{ formatDate(product.date) }</Typography>
+                            <Typography variant='body1' component='caption' display='inline' >{ formatDate(product.date) }</Typography>
                             <Typography variant='h4' component='h4' className={classes.productName}>{product.title}</Typography>
                             <Typography variant='h4' component='h4' className={classes.price}>{formatCurrency(product.price)}</Typography>
                             <Chip label={product.category} />

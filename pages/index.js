@@ -1,12 +1,9 @@
-import dbConnect from '../src/utils/dbConnect';
-import ProductsModel from '../src/models/products';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import slugify from 'slugify';
 import {  
-    CircularProgress,
     Container, 
     Grid, 
     IconButton, 
@@ -20,6 +17,7 @@ import TemplateDefault from '../src/templates/Default';
 import Card from '../src/components/Card';
 import { formatCurrency } from '../src/utils/currency';
 import useToast from '../src/contexts/Toasty';
+import Loading from '../src/components/Loading';
 
 const useStyles = makeStyles((theme) => ({
     searchBox: {
@@ -40,12 +38,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Home = ({ products }) => {
+const Home = () => {
     const classes = useStyles();
     const router = useRouter();
     const { setToasty } = useToast();
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState([]);
 
     const handleSubmitSearch = () => {
         setLoading(true);
@@ -68,10 +67,29 @@ const Home = ({ products }) => {
         setSearch(e.target.value);
     }
 
+    const getProducts = async () => {
+        setLoading(true);
+        const response = await axios.get('/api/products/get');
+        setProducts(response.data.products);
+    }
+
+    useEffect(() => {
+        getProducts()
+            .then(() => setLoading(false))
+            .catch(() => {
+                setLoading(false);
+                setToasty({
+                    open: true,
+                    message: 'Error when loading products',
+                    severity: 'error',
+                })
+            })
+    }, []);
+
     return (
         <TemplateDefault>
             <Container maxWidth="md" >
-                <Typography component="h1" variant='h3' align='center' color='textPrimary'>
+                <Typography component="h1" variant='h4' align='center' color='textPrimary'>
                     What do you want to find?
                 </Typography>
                 <Paper className={classes.searchBox}>
@@ -81,7 +99,7 @@ const Home = ({ products }) => {
                         fullWidth
                     />
                     {
-                        loading ? <CircularProgress size={15} className={classes.loading} /> : 
+                        loading ? <Loading />: 
                         <IconButton onClick={handleSubmitSearch}>
                             <SearchIcon color='primary' />
                         </IconButton>
@@ -94,15 +112,16 @@ const Home = ({ products }) => {
                     Highlights
                 </Typography>
                 <br />
+                { loading && <Loading /> }
                 {
-                    products.length === 0 && (
+                    products.length === 0 && !loading && (
                         <Typography component="div" variant="body1" align='center' gutterBottom>
                             No products found.
                         </Typography>
                     )
                 }
                 <Grid container spacing={4}>
-                    {
+                    {   !loading && (
                         products.map((product, key) => {
                             const category = slugify(product.category, { lower: true });
                             const title = slugify(product.title, { lower: true });
@@ -121,22 +140,11 @@ const Home = ({ products }) => {
                                 </Grid>
                             )
                         })
-                    }
+                    )}
                 </Grid>
             </Container>
         </TemplateDefault>
     )
 }
 
-export async function getServerSideProps() {
-    await dbConnect()
-
-    const products = await ProductsModel.aggregate([{ $limit: 6 }])
-    return {
-        props: {
-            products: JSON.parse(JSON.stringify(products)),
-        },
-    }
-}
-    
 export default Home;

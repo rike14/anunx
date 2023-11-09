@@ -1,9 +1,9 @@
 import nextConnect from 'next-connect';
-import { search } from '../../../src/controllers/products'
+import { get } from '../../../src/controllers/products'
 
 const route = nextConnect();
 
-route.get(search);
+route.get(get);
 
 export default route
 

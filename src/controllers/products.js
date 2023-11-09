@@ -33,7 +33,9 @@ const post = (async (req, res) => {
             const filename = `${timestamp}-${random}-${extension}`
 
             const oldPath = path.join(__dirname, `../../../../../${file.path}`)
-            const newPath = path.join(__dirname, `../../../../../${form.uploadDir}/${filename}`)
+            const newPath = path.join(__dirname, `/${form.uploadDir}/${filename}`)
+
+            console.log(oldPath, newPath, __dirname)
 
             filesToSave.push({ 
                 name: filename, 
@@ -102,7 +104,7 @@ const remove = (async (req, res) => {
     return res.status(200).json({ message: 'success' })
 })
 
-const get = (async (req, res) => {
+const search = (async (req, res) => {
     await dbConnect()
     
     const query  = req.query.query
@@ -119,8 +121,19 @@ const get = (async (req, res) => {
     return res.status(200).json({ products })
 })
 
+const get = (async (req, res) => {
+    await dbConnect()
+
+    const products = await ProductsModel.aggregate([{ $limit: 6 }])
+
+    if (!products) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ products })
+})
+
 export { 
     post,
     remove,
     get,
+    search,
  }
