@@ -1,4 +1,4 @@
-Link: https://anunx-seven.vercel.app/
+Link: <a href="https://anunx-seven.vercel.app" target="_blank">Anunx</a>
 
 ## Home
 ![image](https://github.com/user-attachments/assets/a7603b94-0c61-408f-b9ff-ce63f7ec54fe)
