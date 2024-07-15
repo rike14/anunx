@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
-import FileUpload from '../../../src/components/FileUpload';
+import FileUpload from '../../../src/components/fileUpload';
 import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
 
