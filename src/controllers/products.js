@@ -1,6 +1,6 @@
-import path from 'path'
-import fs from 'fs'
 import formidable from 'formidable-serverless'
+import fs from 'fs'
+import path from 'path'
 import ProductsModel from '../models/products'
 import dbConnect from '../utils/dbConnect'
 
@@ -10,7 +10,7 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: 'public/uploads',
+        uploadDir: 'uploads',
         keepExtensions: true,
     })
 
@@ -32,7 +32,7 @@ const post = (async (req, res) => {
 
             const filename = `${timestamp}-${random}-${extension}`
 
-            const oldPath = path.join(__dirname, `../../../../../${file.path}`)
+            const oldPath = path.join(__dirname, `${file.path}`)
             const newPath = path.join(__dirname, `/${form.uploadDir}/${filename}`)
 
             console.log(oldPath, newPath, __dirname)
@@ -131,9 +131,8 @@ const get = (async (req, res) => {
     return res.status(200).json({ products })
 })
 
-export { 
-    post,
-    remove,
-    get,
-    search,
- }
+export {
+    get, post,
+    remove, search
+}
+

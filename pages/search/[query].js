@@ -1,28 +1,26 @@
-import dbConnect from "../../src/utils/dbConnect";
-import ProductsModel from "../../src/models/products";
 import axios from "axios";
-import slugify from "slugify";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import slugify from "slugify";
 
-import SearchIcon from "@material-ui/icons/Search";
-import { 
-    Box, 
-    Container, 
-    Grid, 
-    IconButton, 
-    InputBase, 
-    makeStyles, 
-    Paper, 
+import {
+    Box,
+    Container,
+    Grid,
+    IconButton,
+    InputBase,
+    makeStyles,
+    Paper,
     Typography,
 } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
 
-import TemplateDefault from "../../src/templates/Default";
 import Card from "../../src/components/Card";
-import { formatCurrency } from "../../src/utils/currency";
-import useToasty from "../../src/contexts/Toasty";
 import Loading from "../../src/components/Loading";
+import useToasty from "../../src/contexts/Toasty";
+import TemplateDefault from "../../src/templates/Default";
+import { formatCurrency } from "../../src/utils/currency";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,30 +51,36 @@ const Search = ({ q, products }) => {
     const classes = useStyles();
     const router = useRouter();
     const { setToasty } = useToasty();
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(q);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmitSearch = () => {
+    const handleSubmitSearch = async () => {
         setLoading(true);
-        axios.get('/api/products/search?query=' + search)
-        .then(() => {
-            setLoading(false);
-            router.push(`/search/${search}`);
-        })
-        .catch(() => {
-            setLoading(false);
-            setToasty({
-                open: true,
-                message: 'Error when searching for products',
-                severity: 'error',
-            })
-        })
+        getProducts()
     }
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
     }
     
+    const getProducts = async () => {
+        await axios.get('/api/products/search?query=' + search)
+            .then(() => {
+                setLoading(false);
+                if (search) {
+                    router.push(`/search/${search}`);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+                setToasty({
+                    open: true,
+                    message: 'Error when searching for products',
+                    severity: 'error',
+                })
+            })
+    }
+
 
     return (
         <TemplateDefault>
@@ -86,11 +90,12 @@ const Search = ({ q, products }) => {
                         <Paper className={classes.searchBox}>
                             <InputBase
                                 onChange={handleChangeSearch}
+                                value={search}
                                 placeholder="Search…"
                                 fullWidth
                             />
                             {
-                                loading ? <Loading /> :
+                                loading ? '' :
                                     <IconButton onClick={handleSubmitSearch}>
                                         <SearchIcon color='primary' />
                                     </IconButton>
@@ -101,15 +106,22 @@ const Search = ({ q, products }) => {
             
                 <Grid item xs={12} sm={12} md={12}>
                     <Box className={classes.box}>
-                        <Typography variant="h6" component="h6">
-                            Advertisements
-                        </Typography>
-                        <Typography variant="body1" component="subtitle2">
-                            Found {products.length} Advertisements for  &quot; {q} &quot;
-                        </Typography>
+                        {loading && <Loading />}
+                        {
+                            products.length === 0 && !loading && (
+                                <>
+                                    <Typography variant="h6" component="h6">
+                                        Advertisements
+                                    </Typography>
+                                    <Typography variant="body1" component="subtitle2">
+                                        Found {products.length} Advertisements for  &quot; {q} &quot;
+                                    </Typography>
+                                </>
+                            )
+                        }
                         <br /><br />
                         <Grid container spacing={4}>
-                            {
+                            {   !loading &&
                                 products.map((product, key) => {
                                     const category = slugify(product.category, { lower: true });
                                     const title = slugify(product.title, { lower: true });
@@ -140,22 +152,10 @@ const Search = ({ q, products }) => {
 
 export async function getServerSideProps({ query }) {
     const q = query.query;
-
-    await dbConnect();
-
-    const products = await ProductsModel.find({
-        $or : [
-            { title: { $regex: q, $options: 'i' } },
-            { description: { $regex: q, $options: 'i' } },
-        ]
-    });
-  
-    return {
-        props: {
-            q,
-            products: JSON.parse(JSON.stringify(products))
-        }
-    }
+    return {props: {
+        q,
+        products: []
+    }}
 }
     
 export default Search;

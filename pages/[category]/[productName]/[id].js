@@ -123,7 +123,7 @@ const Product = ({ product }) => {
                        
                     </Grid>
                 </Grid>
-                <Button href="/user/dashboard" variant='contained' color='primary' >Back</Button>
+                <Button href="/" variant='contained' color='primary' >Back</Button>
             </Container>
         </TemplateDefault>
     )
