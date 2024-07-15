@@ -128,14 +128,14 @@ const Home = () => {
                             return (
                                 <Grid item key={key} xs={12} sm={6} md={4}>
                                     <Link href={`/${category}/${title}/${product._id}`} >
-                                        <a className={classes.productLink}>
+                                        {/* <a className={classes.productLink}> */}
                                             <Card
                                                 
                                                 image={`/uploads/${product.files[0].name}`}
                                                 title={product.title}
                                                 subtitle={formatCurrency(product.price)}
                                             />
-                                        </a>
+                                        {/* </a> */}
                                     </Link>
                                 </Grid>
                             )
