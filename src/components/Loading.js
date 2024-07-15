@@ -1,6 +1,6 @@
 import { Container, Typography } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 import { HashLoader } from "react-spinners";
-import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(() => ({
     loading: {
@@ -8,7 +8,6 @@ const useStyles = makeStyles(() => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
     }
 }));
 

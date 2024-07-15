@@ -1,24 +1,24 @@
-import * as yup from 'yup';
-import { Formik } from 'formik'
-import axios from 'axios'
-import { useRouter } from 'next/router'
+import axios from 'axios';
+import { Formik } from 'formik';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
 
-import { 
-    Box, 
-    Button, 
-    Container, 
-    FormControl, 
-    FormHelperText, 
-    Input, 
-    InputLabel, 
-    Typography,
+import {
+    Box,
+    Button,
     CircularProgress,
-} from '@material-ui/core'
-import { makeStyles } from "@material-ui/core";
+    Container,
+    FormControl,
+    FormHelperText,
+    Input,
+    InputLabel,
+    makeStyles,
+    Typography,
+} from '@material-ui/core';
 
-import TemplateDefault from '../../../src/templates/Default'
-import useToast from '../../../src/contexts/Toasty'
+import useToast from '../../../src/contexts/Toasty';
+import TemplateDefault from '../../../src/templates/Default';
 
 const useStyles = makeStyles((theme) => ({
     container: {

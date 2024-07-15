@@ -1,23 +1,23 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import slugify from 'slugify';
-import {  
-    Container, 
-    Grid, 
-    IconButton, 
-    InputBase, 
-    Paper, 
+import {
+    Container,
+    Grid,
+    IconButton,
+    InputBase,
+    Paper,
     Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
-import TemplateDefault from '../src/templates/Default';
+import axios from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import slugify from 'slugify';
 import Card from '../src/components/Card';
-import { formatCurrency } from '../src/utils/currency';
-import useToast from '../src/contexts/Toasty';
 import Loading from '../src/components/Loading';
+import useToast from '../src/contexts/Toasty';
+import TemplateDefault from '../src/templates/Default';
+import { formatCurrency } from '../src/utils/currency';
 
 const useStyles = makeStyles((theme) => ({
     searchBox: {
@@ -99,7 +99,7 @@ const Home = () => {
                         fullWidth
                     />
                     {
-                        loading ? <Loading />: 
+                        loading ? '': 
                         <IconButton onClick={handleSubmitSearch}>
                             <SearchIcon color='primary' />
                         </IconButton>

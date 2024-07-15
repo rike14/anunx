@@ -1,21 +1,21 @@
-import dbConnect from '../../../src/utils/dbConnect'
-import ProductsModel from '../../../src/models/products'
-import { 
+import {
+    Avatar,
+    Box,
     Button,
-    Avatar, 
-    Box, 
-    Card, 
-    CardHeader, 
-    CardMedia, 
-    Chip, 
-    Container, 
-    Grid, 
-    makeStyles, 
-    Typography 
+    Card,
+    CardHeader,
+    CardMedia,
+    Chip,
+    Container,
+    Grid,
+    makeStyles,
+    Typography
 } from '@material-ui/core';
+import Carousel from 'react-material-ui-carousel';
+import ProductsModel from '../../../src/models/products';
 import TemplateDefault from '../../../src/templates/Default';
-import Carousel from 'react-material-ui-carousel'
 import { formatCurrency } from '../../../src/utils/currency';
+import dbConnect from '../../../src/utils/dbConnect';
 
 const useStyles = makeStyles((theme) => ({
     box: {
