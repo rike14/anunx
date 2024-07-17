@@ -48,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
       padding: '0 30px',
       backgroundColor: theme.palette.background.white,
     },
+  },
+  googleButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '20px 0px'
   }
 }));
 
@@ -99,7 +105,7 @@ const Signin = ({ NEXTAUTH_URL }) => {
       <Container maxWidth="md" component="main" >
         <Box mt={5}>
 
-          <Box display='flex' justifyContent='center'>
+          <Box className={classes.googleButton}>
             <Button 
               variant="contained" 
               color="primary"

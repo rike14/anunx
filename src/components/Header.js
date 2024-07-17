@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  menuContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+
+  },
   title: {
     flexGrow: 1,
     cursor: 'pointer',
@@ -73,7 +79,7 @@ export default function ButtonAppBar() {
               </Typography>
             </Link>
             </Container>
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" className={classes.menuContainer}>
 
             <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
