@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

@@ -1,29 +1,29 @@
-import dbConnect from '../../src/utils/dbConnect'
 import axios from 'axios'
-import slugify from 'slugify'
 import { forwardRef, useState } from 'react'
-import { getSession } from 'next-auth/client'
+import slugify from 'slugify'
 import ProductsModel from '../../src/models/products'
+import dbConnect from '../../src/utils/dbConnect'
 
-import { 
-  Container, 
-  Typography, 
-  Button, 
-  Grid, 
+import {
+  Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
   Slide,
+  Typography,
 } from '@material-ui/core'
-import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons'
 
 import { makeStyles } from '@material-ui/core/styles'
-import TemplateDefault from '../../src/templates/Default'
+import { getSession } from 'next-auth/react'
 import Card from '../../src/components/Card'
-import { formatCurrency } from '../../src/utils/currency'
 import useToasty from '../../src/contexts/Toasty'
+import TemplateDefault from '../../src/templates/Default'
+import { formatCurrency } from '../../src/utils/currency'
 
 const useStyles = makeStyles((theme) => ({
   buttonAdd: {
@@ -173,9 +173,12 @@ const Home = ({ products }) => {
 Home.requireAuth = true
 
 export async function getServerSideProps(req) {
-  const session = await getSession( req )
+  const session = await getSession(req)
+  if (!session) {
+    return { props: {} }
+  }
   await dbConnect()
-  const products = await ProductsModel.find({ 'user.id': session.userId })
+  const products = await ProductsModel.find({ 'user.id': session.id})
   
   return {
     props: {

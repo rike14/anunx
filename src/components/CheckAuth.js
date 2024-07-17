@@ -1,19 +1,19 @@
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Loading from "./Loading";
 
 const CheckAuth = ({ Component, pageProps }) => {
-    const [ session, loading ] = useSession();
-    const router = useRouter();
-
+  const {data: session} = useSession();
+  const router = useRouter();
+  const user = pageProps.userId;
+  
   useEffect(() => {
-    if(loading) return;
     
-    if (!session) {
+    if (!session && !user) {
       router.push('/auth/signin');
     }
-  }, [session, loading]);
+  }, [session]);
 
     if (session) {
        return <Component {...pageProps} />;

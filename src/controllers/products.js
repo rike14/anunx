@@ -1,8 +1,8 @@
-import formidable from 'formidable-serverless'
-import fs from 'fs'
-import path from 'path'
-import ProductsModel from '../models/products'
-import dbConnect from '../utils/dbConnect'
+import formidable from 'formidable-serverless';
+import fs from 'fs';
+import path from 'path';
+import ProductsModel from '../models/products';
+import dbConnect from '../utils/dbConnect';
 
 
 const post = (async (req, res) => {
@@ -25,18 +25,17 @@ const post = (async (req, res) => {
 
         const filesToSave = []
 
-        fileToRename.forEach(file => {
+        fileToRename.forEach(async file => {
             const timestamp = Date.now()
             const random = Math.floor(Math.random() * 999999) + 1
             const extension = path.extname(file.name)
 
             const filename = `${timestamp}-${random}-${extension}`
 
-            const oldPath = path.join(__dirname, `${file.path}`)
+            const oldPath = path.join(__dirname, `../../../../../${file.path}`)
             const newPath = path.join(__dirname, `/${form.uploadDir}/${filename}`)
 
-            console.log(oldPath, newPath, __dirname)
-
+            
             filesToSave.push({ 
                 name: filename, 
                 path: newPath
@@ -48,6 +47,7 @@ const post = (async (req, res) => {
                     return res.status(500).json({ message: 'error' })
                 }
             })
+            
 
         })
 
@@ -134,5 +134,5 @@ const get = (async (req, res) => {
 export {
     get, post,
     remove, search
-}
+};
 

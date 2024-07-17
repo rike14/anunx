@@ -1,11 +1,11 @@
-import nextConnect from 'next-connect';
-import { search } from '../../../src/controllers/products'
+import { createRouter } from 'next-connect';
+import { search } from '../../../src/controllers/products';
 
-const route = nextConnect();
+const route = createRouter();
 
 route.get(search);
 
-export default route
+export default route.handler();
 
 export const config = {
     api: {

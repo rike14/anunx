@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { Formik } from 'formik';
-import { getSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
 
@@ -20,6 +19,7 @@ import {
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { getSession } from 'next-auth/react';
 import FileUpload from '../../../src/components/fileUpload';
 import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
@@ -308,13 +308,16 @@ const Publish = ({ userId, image }) => {
 
 Publish.requireAuth = true
 
-export async function getServerSideProps({ req }) {
-    const { userId, user} = await getSession({ req })
-
+export async function getServerSideProps( req ) {
+    const session = await getSession(req)
+    
+    if(!session){
+        return {props: {}}
+    }
     return {
         props: {
-            userId,
-            image: user.image,
+            userId: session.user.id,
+            image: session.user.image,
         }
     }
 }
