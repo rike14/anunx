@@ -11,7 +11,7 @@ const CheckAuth = ({ Component, pageProps }) => {
   useEffect(() => {
     
     if (!session && !user) {
-      router.push('/auth/signin');
+      router.push('/');
     }
   }, [session]);
 

@@ -1,3 +1,5 @@
+import dbConnect from "../../src/utils/dbConnect";
+import ProductsModel from "../../src/models/products";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -62,6 +64,10 @@ const Search = ({ q, products }) => {
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
     }
+
+    const handleClick = () => {
+        setLoading(true);
+    };
     
     const getProducts = async () => {
         await axios.get('/api/products/search?query=' + search)
@@ -127,15 +133,13 @@ const Search = ({ q, products }) => {
                                     const title = slugify(product.title, { lower: true });
                                     return (
                                         <Grid item key={key} xs={12} sm={6} md={4}>
-                                            <Link href={`/${category}/${title}?id=${product._id}`}>
-                                                {/* <a className={classes.productLink}> */}
-                                                    <Card
-                                                        image={`/uploads/${product.files[0].name}`}
-                                                        title={product.title}
-                                                        subtitle={formatCurrency(product.price)}
-                                                        href={`/${category}/${title}?id=${product._id}`}
-                                                    />
-                                                {/* </a> */}
+                                            <Link href={`/${category}/${title}/${product._id}`} className={classes.productLink} onClick={() => handleClick()}>
+                                                <Card
+                                                    image={`/uploads/${product.files[0].name}`}
+                                                    title={product.title}
+                                                    subtitle={formatCurrency(product.price)}
+                                                    href={`/${category}/${title}/${product._id}`}
+                                                />
                                             </Link>
                                         </Grid>
                                     )
@@ -152,10 +156,21 @@ const Search = ({ q, products }) => {
 
 export async function getServerSideProps({ query }) {
     const q = query.query;
-    return {props: {
-        q,
-        products: []
-    }}
+    await dbConnect();
+
+    const products = await ProductsModel.find({
+        $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { description: { $regex: q, $options: 'i' } },
+        ]
+    });
+
+    return {
+        props: {
+            q,
+            products: JSON.parse(JSON.stringify(products))
+        }
+    }
 }
     
 export default Search;

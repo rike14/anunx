@@ -84,13 +84,13 @@ const Product = ({ product }) => {
                         <Box className={classes.box} textAlign='left'>   
                             <Typography variant='body1' component='caption' display='inline' >{ formatDate(product.date) }</Typography>
                             <Typography variant='h4' component='h4' className={classes.productName}>{product.title}</Typography>
-                            <Typography variant='h4' component='h4' className={classes.price}>{formatCurrency(product.price)}</Typography>
+                            <Typography variant='h5' component='h5' className={classes.price}>{formatCurrency(product.price)}</Typography>
                             <Chip label={product.category} />
                         </Box>
 
                         <Box className={classes.box} textAlign='left'>
                             <Typography variant='h6' component='h6' >Description</Typography>
-                            <Typography variant='p' component='body2'>{product.description}</Typography>
+                            <Typography variant='p' component='p'>{product.description}</Typography>
                         </Box>
                     </Grid>
 
