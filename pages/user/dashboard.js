@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import slugify from 'slugify'
-import ProductsModel from '../../src/models/products'
+import UsersModel from '../../src/models/users'
 import dbConnect from '../../src/utils/dbConnect'
 
 import {
@@ -21,6 +21,7 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import { getSession } from 'next-auth/react'
 import Card from '../../src/components/Card'
+import Loading from '../../src/components/Loading'
 import useToasty from '../../src/contexts/Toasty'
 import TemplateDefault from '../../src/templates/Default'
 import { formatCurrency } from '../../src/utils/currency'
@@ -43,12 +44,39 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Home = ({ products }) => {
+const Home = ({ user }) => {
   const classes = useStyles()
   const { setToasty } = useToasty()
   const [productID, setProductID] = useState() 
   const [removeProducts, setRemoveProducts] = useState([])
+  const [products, setProducts] = useState([])
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const getProducts = async () => {
+      setLoading(true);
+      const response = await axios.get('/api/products/getByUser',
+         {
+          params: {
+            id: user._id
+          }
+        }
+      );
+      setProducts(response.data.products);
+  }
+
+  useEffect(() => {
+    getProducts()
+      .then(() => setLoading(false))
+      .catch(() => {
+        setLoading(false);
+        setToasty({
+          open: true,
+          message: 'Error when loading products',
+          severity: 'error',
+        })
+      })
+  }, []);
 
   const handleClickRemove = (productId) => {
     setProductID(productId);
@@ -118,7 +146,8 @@ const Home = ({ products }) => {
         <Button href="/user/publish" variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
       </Container>
       <Container maxWidth="md" >
-        {
+        {loading && <Loading />}
+        { !loading &&
           products.length === 0 && (
             <Typography component="div" variant="body1" align='center' gutterBottom>
               No ads posted yet!
@@ -126,7 +155,7 @@ const Home = ({ products }) => {
           )
         }
         <Grid container spacing={4}>
-          {
+          { !loading &&
             products.map((product, key) => {
               if(removeProducts.includes(product._id)) return null
               const category = slugify(product.category, { lower: true });
@@ -178,11 +207,11 @@ export async function getServerSideProps(req) {
     return { props: {} }
   }
   await dbConnect()
-  const products = await ProductsModel.find({ 'user.id': session.id})
+  const user = await UsersModel.findOne({'email': session.user.email})
   
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
+      user: JSON.parse(JSON.stringify(user)),
     }
   }
 }

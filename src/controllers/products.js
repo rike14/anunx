@@ -131,8 +131,19 @@ const get = (async (req, res) => {
     return res.status(200).json({ products })
 })
 
+const getByUser = (async (req, res) => {
+    await dbConnect()
+    const id = req.query.id
+    
+    const products = await ProductsModel.find({ 'user.id': id })
+
+    if (!products) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ products })
+})
+
 export {
-    get, post,
+    get, getByUser, post,
     remove, search
 };
 
