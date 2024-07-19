@@ -11,11 +11,14 @@ import {
     makeStyles,
     Typography
 } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import ProductsModel from '../../../src/models/products';
 import TemplateDefault from '../../../src/templates/Default';
 import { formatCurrency } from '../../../src/utils/currency';
 import dbConnect from '../../../src/utils/dbConnect';
+import Loading from '../../../src/components/Loading'
+
 
 const useStyles = makeStyles((theme) => ({
     box: {
@@ -42,6 +45,11 @@ const useStyles = makeStyles((theme) => ({
             marginBottom: '20px',
         }
     },
+    container: {
+        display: 'grid',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 }));
 
 const formatDate = (date) => {
@@ -53,6 +61,12 @@ const formatDate = (date) => {
 
 const Product = ({ product }) => {
     const classes = useStyles();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    if (!mounted) return (<TemplateDefault >
+        <Container className={classes.container}><Loading /></Container></TemplateDefault>);
     return (
         <TemplateDefault >
             <Container maxWidth='lg'>
@@ -81,16 +95,16 @@ const Product = ({ product }) => {
                                 }
                             </Carousel>
                         </Box>
-                        <Box className={classes.box} textAlign='left'>   
+                        <Box className={classes.box}>   
                             <Typography variant='body1' component='caption' display='inline' >{ formatDate(product.date) }</Typography>
                             <Typography variant='h4' component='h4' className={classes.productName}>{product.title}</Typography>
-                            <Typography variant='h4' component='h4' className={classes.price}>{formatCurrency(product.price)}</Typography>
+                            <Typography variant='h5' component='h5' className={classes.price}>{formatCurrency(product.price)}</Typography>
                             <Chip label={product.category} />
                         </Box>
 
-                        <Box className={classes.box} textAlign='left'>
+                        <Box className={classes.box}>
                             <Typography variant='h6' component='h6' >Description</Typography>
-                            <Typography variant='p' component='body2'>{product.description}</Typography>
+                            <Typography variant='body1' component='p'>{product.description}</Typography>
                         </Box>
                     </Grid>
 

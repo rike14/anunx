@@ -73,6 +73,10 @@ const Home = () => {
         setProducts(response.data.products);
     }
 
+    const handleClick = () => {
+        setLoading(true);
+    };
+
     useEffect(() => {
         getProducts()
             .then(() => setLoading(false))
@@ -127,15 +131,13 @@ const Home = () => {
                             const title = slugify(product.title, { lower: true });
                             return (
                                 <Grid item key={key} xs={12} sm={6} md={4}>
-                                    <Link href={`/${category}/${title}/${product._id}`} >
-                                        <a className={classes.productLink}>
-                                            <Card
-                                                
-                                                image={`/uploads/${product.files[0].name}`}
-                                                title={product.title}
-                                                subtitle={formatCurrency(product.price)}
-                                            />
-                                        </a>
+                                    <Link href={`/${category}/${title}/${product._id}`} className={classes.productLink} onClick={() => handleClick()}>
+                                        <Card
+                                            
+                                            image={`/uploads/${product.files[0].name}`}
+                                            title={product.title}
+                                            subtitle={formatCurrency(product.price)}
+                                        />
                                     </Link>
                                 </Grid>
                             )

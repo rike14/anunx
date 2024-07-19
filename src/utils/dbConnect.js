@@ -1,9 +1,4 @@
 import mongoose from 'mongoose';
-mongoose.set('useNewUrlParser', true);
-mongoose.set("strictQuery", false);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useUnifiedTopology', true);
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -35,7 +30,6 @@ async function dbConnect() {
         }
 
         cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-        //    console.log('Connected to MongoDB')
             return mongoose
         })
     }

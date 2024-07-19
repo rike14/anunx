@@ -1,15 +1,16 @@
-import axios from 'axios'
-import NextAuth from 'next-auth'
-import Providers from 'next-auth/providers'
+import axios from 'axios';
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from "next-auth/providers/google";
 
 export default NextAuth({
     providers: [
-        Providers.Google({
+        GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET
         }),
 
-        Providers.Credentials({
+        CredentialsProvider({
             name: 'Credentials',
             async authorize(credentials) {
                 const res = await axios.post(`${process.env.NEXTAUTH_URL}/api/auth/signin`, credentials)
@@ -27,7 +28,7 @@ export default NextAuth({
     ],
 
     session: {
-        jwt: true,
+        strategy: "jwt",
     },
 
     jwt: {
@@ -35,7 +36,7 @@ export default NextAuth({
     },
 
     callbacks: {
-        async jwt(token, user) {
+        async jwt({ token, user}) {
             if (user) {
                 token.uid = user._id || user.id;
             }
@@ -43,8 +44,11 @@ export default NextAuth({
             return Promise.resolve(token)
         },
 
-        async session(session, user) {
-            session.userId = user.uid
+        async session({ session, token }) {
+            session.user.id = token.user?.id ?? token.uid
+            session.user.name = token.user?.name ?? token.name
+            session.user.email = token.user?.email ?? token.email
+            session.user.image = token.user?.image ?? token.picture
             return session
         }
     },

@@ -1,8 +1,8 @@
-import nextConnect from 'next-connect';
-import { remove } from '../../../src/controllers/products'
+import { createRouter } from 'next-connect';
+import { remove } from '../../../src/controllers/products';
 
-const route = nextConnect();
+const route = createRouter();
 
 route.delete(remove)
 
-export default route
+export default route.handler();

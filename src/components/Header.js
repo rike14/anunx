@@ -1,25 +1,33 @@
-import React, { useState } from 'react';
-import { signOut, useSession } from 'next-auth/client';
-import { 
-  Button, 
-  Toolbar,
+import {
   AppBar,
-  IconButton,
-  Typography,
-  Container,
   Avatar,
+  Button,
+  Container,
+  Divider,
+  IconButton,
   Menu,
   MenuItem,
-  Divider,
-} from '@material-ui/core'
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
+import { signOut, useSession } from 'next-auth/react';
+import React, { useState } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles'
-import Link from 'next/link';
+import { makeStyles } from '@material-ui/core/styles';
 import { AccountCircle } from '@material-ui/icons';
+import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
-    marginRight: theme.spacing(2),
+    display: 'flex,',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  menuContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+
   },
   title: {
     flexGrow: 1,
@@ -52,38 +60,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ButtonAppBar() {
-  const [session, loading] = useSession();
+  const {data: session} = useSession();
   const [anchorUserMenu, setAnchorUserMenu] = useState(false);
   const classes = useStyles();
-
   const openUserMenu = Boolean(anchorUserMenu);
   
   return (
     <>
       <AppBar position="static"  elevation={3}>
         <Container maxWidth="lg">
-          <Toolbar>
+          <Toolbar className={classes.menuButton}>
+            <Container maxWidth="lg">
+
             <Link href="/" passHref className={classes.link}>
               <Typography variant="h6" component="div" className={classes.title}>
                 AnunX
               </Typography>
             </Link>
+            </Container>
+            <Container maxWidth="lg" className={classes.menuContainer}>
+
             <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
               Advertise and Sell
             </Button>
             </Link>
+            
             {
               session 
                 ? (
                   <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
                     {
-                      session.user.image ? 
+                      session.user?.image ? 
                       <Avatar src={session.user.image}/>
                       : <AccountCircle />
                     }
                     <Typography className={classes.userName} variant='subtitle2' color='secondary'>
-                     {session.user.name}
+                     {session.user?.name ?? ''}
                     </Typography>
                   </IconButton>
               ) : <Link href={'/auth/signup'} passHref className={classes.link}>
@@ -110,6 +123,7 @@ export default function ButtonAppBar() {
               <Divider  className={classes.divider}/>
               <MenuItem onClick={() => signOut({ callbackUrl: '/' })} >Logout</MenuItem>
             </Menu>
+            </Container>
           </Toolbar>
         </Container>
       </AppBar>

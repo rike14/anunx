@@ -39,12 +39,12 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
             <Typography variant="h6" component="h6" align='left' color={errors && touched ? 'error' : 'textPrimary'}>
                 Images
             </Typography>
-            <Typography variant="div" component="body2" align='left' color={errors && touched ? 'error' : 'textPrimary'}>
+            <Typography variant="div" component="p" align='left' color={errors && touched ? 'error' : 'textPrimary'}>
                 The first image will be the cover
             </Typography>
             {
                 errors && touched ?
-                <Typography variant="body2" gutterBottom color='error'>
+                <Typography variant="p" gutterBottom color='error'>
                     {errors}
                 </Typography>
                 : null
@@ -52,7 +52,7 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
             <Box className={classes.thumbsContainer}>
                 <Box className={classes.dropZone} {...getRootProps()}>
                     <input name='files' {...getInputProps()} />
-                    <Typography variant='body2' color='textPrimary'>
+                    <Typography variant='p' color='textPrimary'>
                         Click here to upload images.
                     </Typography>
                 </Box>
