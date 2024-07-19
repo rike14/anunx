@@ -20,6 +20,7 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { getSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import Card from '../../src/components/Card'
 import Loading from '../../src/components/Loading'
 import useToasty from '../../src/contexts/Toasty'
@@ -52,7 +53,8 @@ const Home = ({ user }) => {
   const [products, setProducts] = useState([])
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter()
+  
   const getProducts = async () => {
       setLoading(true);
       const response = await axios.get('/api/products/getByUser',
@@ -66,6 +68,10 @@ const Home = ({ user }) => {
   }
 
   useEffect(() => {
+    if (!user) {
+      router.push('/')
+      return;
+    } 
     getProducts()
       .then(() => setLoading(false))
       .catch(() => {

@@ -63,7 +63,6 @@ export default function ButtonAppBar() {
   const {data: session} = useSession();
   const [anchorUserMenu, setAnchorUserMenu] = useState(false);
   const classes = useStyles();
-
   const openUserMenu = Boolean(anchorUserMenu);
   
   return (
@@ -92,12 +91,12 @@ export default function ButtonAppBar() {
                 ? (
                   <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
                     {
-                      session.user.image ? 
+                      session.user?.image ? 
                       <Avatar src={session.user.image}/>
                       : <AccountCircle />
                     }
                     <Typography className={classes.userName} variant='subtitle2' color='secondary'>
-                     {session.user.name}
+                     {session.user?.name ?? ''}
                     </Typography>
                   </IconButton>
               ) : <Link href={'/auth/signup'} passHref className={classes.link}>

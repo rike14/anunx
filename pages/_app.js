@@ -10,9 +10,8 @@ import theme from '../src/theme';
 
 export default function MyApp({ 
   Component,
-  pageProps: { ...pageProps } 
+  pageProps: { ...pageProps }
 }) {
-
 
   return (
     <React.Fragment>
@@ -20,7 +19,7 @@ export default function MyApp({
         <title>Anunx</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
-      <SessionProvider session={pageProps.session}>
+      <SessionProvider session={pageProps}>
         <ThemeProvider theme={theme}>
           <ToastyProvider>
           <CssBaseline />
