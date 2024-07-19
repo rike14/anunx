@@ -179,7 +179,7 @@ const Home = ({ user }) => {
                         size='small' 
                         color='primary'
                         variant="contained"
-                        href={`/${category}/${title}/${product._id}`}
+                        href={`/user/publish?id=${product._id}`}
                         startIcon={<EditIcon />}
                       >
                         Edit

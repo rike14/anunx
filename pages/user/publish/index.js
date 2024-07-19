@@ -19,10 +19,12 @@ import {
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import FileUpload from '../../../src/components/fileUpload';
-import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation'
+import useToasty from '../../../src/contexts/Toasty';
 
 
 
@@ -93,7 +95,51 @@ const validationSchema = yup.object().shape({
 const Publish = ({ userId, image }) => {
     const classes = useStyles()
     const router = useRouter()
-    const { setToasty } = useToasty()
+    const [canEdit, setCanEdit] = useState(false);
+    const { data: session } = useSession()
+    const [product, setProduct] = useState([])
+    const [loading, setLoading] = useState(false);
+    const { setToasty } = useToasty();
+
+    const searchParams = useSearchParams()
+
+    const getProducts = async () => {
+        setLoading(true);
+        const response = await axios.get('/api/products/get',
+            {
+                params: {
+                    id: searchParams.get('id')
+                }
+            }
+        );
+        setProduct(response.data.product);
+        if (session.user?.email == product.user.email) {
+            setCanEdit(true)
+        }
+    }
+
+
+    useEffect(() => {
+        if (searchParams.get('id')){
+            getProducts()
+                .then(() => setLoading(false))
+                .catch(() => {
+                    setLoading(false);
+                    setToasty({
+                        open: true,
+                        message: 'Error when loading products',
+                        severity: 'error',
+                    })
+                })
+        }
+        if(!canEdit && searchParams.get('id')){
+            router.push('/user/publish')
+        }
+    }, []);
+
+    
+
+   
 
     const formValues = {
         ...initialValues,
@@ -177,7 +223,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>Advertisement Title</InputLabel>
                                             <Input 
                                                 name='title'
-                                                value={values.title}
+                                                value={product?.title ?? values.title}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.title && touched.title ? errors.title : null }</FormHelperText>
@@ -187,7 +233,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>Category</InputLabel>
                                             <Select
                                             name='category'
-                                            value={values.category}
+                                            value={product?.category ?? values.category}
                                             onChange={handleChange}
                                             fullWidth
                                             >
@@ -202,7 +248,7 @@ const Publish = ({ userId, image }) => {
                                 <Container maxWidth="md" className={classes.boxContainer}>
                                     <Box className={classes.box}>
                                       <FileUpload
-                                        files={values.files}
+                                        files={product?.files ?? values.files}
                                         errors={errors.files}
                                         touched={touched.files}
                                         setFieldValue={setFieldValue}
@@ -218,6 +264,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}> Describe your product in detail</InputLabel>
                                             <Input 
                                                 name='description'
+                                                value={product?.description ?? values.description}
                                                 minRows={6}
                                                 multiline
                                                 onChange={handleChange}
@@ -233,6 +280,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>Price</InputLabel>
                                             <Input 
                                                 name='price'
+                                                value={product?.price ?? values.price}
                                                 variant='outlined'
                                                 onChange={handleChange}
                                                 startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -250,7 +298,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>Name</InputLabel>
                                             <Input 
                                                 name='name'
-                                                value={values.name}
+                                                value={product?.user?.name ?? values.name}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.name && touched.name  ? errors.name : null }</FormHelperText> 
@@ -260,7 +308,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>E-mail</InputLabel>
                                             <Input 
                                                 name='email'
-                                                value={values.email}
+                                                value={product?.user?.email ?? values.email}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.email && touched.email  ? errors.email : null }</FormHelperText>
@@ -270,7 +318,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>Phone</InputLabel>
                                             <Input 
                                                 name='phone'
-                                                value={values.phone}
+                                                value={product?.user?.phone ?? values.phone}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.phone && touched.phone  ? errors.phone : null }</FormHelperText>
@@ -280,7 +328,7 @@ const Publish = ({ userId, image }) => {
                                             <InputLabel className={classes.inputLabel}>City</InputLabel>
                                             <Input 
                                                 name='city'
-                                                value={values.city}
+                                                value={product?.user?.city ?? values.city}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.city && touched.city ? errors.city : null }</FormHelperText>

@@ -123,7 +123,14 @@ const search = (async (req, res) => {
 
 const get = (async (req, res) => {
     await dbConnect()
+    const id = req.query?.id
+    if(id){
+        const product = await ProductsModel.findById({ '_id': id })
 
+        if (!product) return res.status(500).json({ message: 'error' })
+
+        return res.status(200).json({ product })
+    }
     const products = await ProductsModel.aggregate([{ $limit: 6 }])
 
     if (!products) return res.status(500).json({ message: 'error' })
