@@ -20,7 +20,7 @@ import {
 
 import { useState } from 'react';
 import Loading from '../../../src/components/Loading';
-import useToast from '../../../src/contexts/Toasty';
+import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
 
 const useStyles = makeStyles((theme) => ({
@@ -78,7 +78,7 @@ const validationSchema = yup.object().shape({
 const Signin = ({ NEXTAUTH_URL }) => {
   const classes = useStyles()
   const router = useRouter()
-  const { setToasty } = useToast()
+  const { setToasty } = useToasty()
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
@@ -94,6 +94,18 @@ const Signin = ({ NEXTAUTH_URL }) => {
       email: values.email,
       password: values.password,
       callbackUrl: `${NEXTAUTH_URL}/user/dashboard`,
+      redirect: false
+    }).then((result) => {
+      if (result?.error){
+        setLoading(false)
+        setToasty({
+          open: true,
+          message: 'Invalid email or password',
+          severity: 'error',
+        })
+      } else {
+        router.push('/user/dashboard')
+      }
     })
   }
 
