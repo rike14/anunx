@@ -18,6 +18,8 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { useState } from 'react';
+import Loading from '../../../src/components/Loading';
 import useToast from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
 
@@ -77,19 +79,22 @@ const Signin = ({ NEXTAUTH_URL }) => {
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToast()
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
+    setLoading(true)
     signIn('google', {
       callbackUrl: `${NEXTAUTH_URL}/user/dashboard`
     })
   }
 
   const handleFormSubmit = async values => {
-      signIn('credentials', {
-        email: values.email,
-        password: values.password,
-        callbackUrl: `${NEXTAUTH_URL}/user/dashboard`,
-      })
+    setLoading(true)
+    await signIn('credentials', {
+      email: values.email,
+      password: values.password,
+      callbackUrl: `${NEXTAUTH_URL}/user/dashboard`,
+    })
   }
 
 
@@ -101,107 +106,109 @@ const Signin = ({ NEXTAUTH_URL }) => {
           Sign In
         </Typography>
       </Container>
+      {loading && <Loading />}
+      { !loading && 
+        <Container maxWidth="md" component="main" >
+          <Box mt={5}>
 
-      <Container maxWidth="md" component="main" >
-        <Box mt={5}>
+            <Box className={classes.googleButton}>
+              <Button 
+                variant="contained" 
+                color="primary"
+                startIcon={
+                  <Image
+                  src="/images/logo_google.svg"
+                  alt="Google"
+                  width={20}
+                  height={20}
+                  />
+                }
+                onClick={handleGoogleLogin} 
+              >
+                Enter with Google
+                
+              </Button>
+            </Box>
 
-          <Box className={classes.googleButton}>
-            <Button 
-              variant="contained" 
-              color="primary"
-              startIcon={
-                <Image
-                src="/images/logo_google.svg"
-                alt="Google"
-                width={20}
-                height={20}
-                />
+            <Box className={classes.orSeparator}>
+              <span>or</span>
+            </Box>
+          
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleFormSubmit}
+            >
+              {
+                ({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    {
+                      router.query.i === '1' 
+                      ? setToasty({ message: 'Invalid email or password', type: 'error' })
+                      : null
+                    }
+                    <FormControl fullWidth error={errors.email && touched.email} className={classes.formControl}>
+                      <InputLabel className={classes.InputLabel}>Email</InputLabel>
+                      <Input
+                        name="email"
+                        type="email"
+                        value={values.email}
+                        onChange={handleChange}
+                      />
+                      <FormHelperText>{errors.email && touched.email ? errors.email : ''}</FormHelperText>
+                    </FormControl>
+
+                    <FormControl fullWidth error={errors.password && touched.password} className={classes.formControl}>
+                      <InputLabel className={classes.InputLabel}>Password</InputLabel>
+                      <Input
+                        name="password"
+                        type="password"
+                        value={values.password}
+                        onChange={handleChange}
+                      />
+                      <FormHelperText>{errors.password && touched.password ? errors.password : ''}</FormHelperText>
+                    </FormControl>
+                    {
+                      isSubmitting ? (
+                        <CircularProgress className={classes.loading} />
+                      ) : (
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          className={classes.submit}
+                        >
+                          Sign In
+                        </Button>
+                      )
+                    }
+                  </form>
+                )
               }
-              onClick={handleGoogleLogin} 
-            >
-              Enter with Google
-              
-            </Button>
+            </Formik>
+            <Typography align='center' style={{marginTop: 10}}>
+              Dont have an account?
+            </Typography>
+            <Link href={'/auth/signup'} passHref>
+              <Button fullWidth
+                variant="contained"
+                color="primary" 
+                
+              >
+                Signup
+              </Button>
+            </Link>
           </Box>
-
-          <Box className={classes.orSeparator}>
-            <span>or</span>
-          </Box>
-        
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleFormSubmit}
-          >
-            {
-              ({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  {
-                    router.query.i === '1' 
-                    ? setToasty({ message: 'Invalid email or password', type: 'error' })
-                    : null
-                  }
-                  <FormControl fullWidth error={errors.email && touched.email} className={classes.formControl}>
-                    <InputLabel className={classes.InputLabel}>Email</InputLabel>
-                    <Input
-                      name="email"
-                      type="email"
-                      value={values.email}
-                      onChange={handleChange}
-                    />
-                    <FormHelperText>{errors.email && touched.email ? errors.email : ''}</FormHelperText>
-                  </FormControl>
-
-                  <FormControl fullWidth error={errors.password && touched.password} className={classes.formControl}>
-                    <InputLabel className={classes.InputLabel}>Password</InputLabel>
-                    <Input
-                      name="password"
-                      type="password"
-                      value={values.password}
-                      onChange={handleChange}
-                    />
-                    <FormHelperText>{errors.password && touched.password ? errors.password : ''}</FormHelperText>
-                  </FormControl>
-                  {
-                    isSubmitting ? (
-                      <CircularProgress className={classes.loading} />
-                    ) : (
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                      >
-                        Sign In
-                      </Button>
-                    )
-                  }
-                </form>
-              )
-            }
-          </Formik>
-          <Typography align='center' style={{marginTop: 10}}>
-            Dont have an account?
-          </Typography>
-          <Link href={'/auth/signup'} passHref>
-            <Button fullWidth
-              variant="contained"
-              color="primary" 
-              
-            >
-              Signup
-            </Button>
-          </Link>
-        </Box>
-      </Container>
+        </Container>
+      }
     </TemplateDefault>
   )
 }

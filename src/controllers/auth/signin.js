@@ -16,7 +16,7 @@ const post = async (req, res) => {
         return res.status(401).json({ success: false, message: 'invalid' })
     }
 
-    const passIsCorrect = compare(password, user.password)
+    const passIsCorrect = await compare(password, user.password)
 
     if (passIsCorrect) {
         return res.status(200).json({
@@ -31,5 +31,5 @@ const post = async (req, res) => {
 }
 
 export {
-    post,
+    post
 }
