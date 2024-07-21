@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loading from '../../../src/components/Loading';
 import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
@@ -76,10 +76,19 @@ const validationSchema = yup.object().shape({
 })
 
 const Signin = ({ NEXTAUTH_URL }) => {
+  const {data: session} = useSession()
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToasty()
   const [loading, setLoading] = useState(false);
+
+
+  useEffect(() => {
+
+    if (session) {
+      router.push('/user/dashboard');
+    }
+  }, [session]);
 
   const handleGoogleLogin = () => {
     setLoading(true)
@@ -104,8 +113,20 @@ const Signin = ({ NEXTAUTH_URL }) => {
           severity: 'error',
         })
       } else {
-        router.push('/user/dashboard')
+        setToasty({
+          open: true,
+          message: 'Login successfully, welcome!',
+          severity: 'success',
+        })
+        router.push(`${result.url}`)
       }
+    }).catch(() => {
+      setLoading(false)
+      setToasty({
+        open: true,
+        message: 'Error, something is wrong',
+        severity: 'error',
+      })
     })
   }
 

@@ -67,6 +67,11 @@ const Home = ({ user }) => {
       setProducts(response.data.products);
   }
 
+  const handleClickGoToPostAd = async () => {
+    setLoading(true);
+    router.push('/user/publish') 
+  }
+
   useEffect(() => {
     if (!user) {
       router.push('/')
@@ -149,7 +154,7 @@ const Home = ({ user }) => {
         <Typography component="h1" variant="h4" align='center'>
           My Advertisement
         </Typography>
-        <Button href="/user/publish" variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
+        <Button  onClick={handleClickGoToPostAd} variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
       </Container>
       <Container maxWidth="md" >
         {loading && <Loading />}

@@ -82,7 +82,7 @@ export default function ButtonAppBar() {
 
             <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
-              Advertise and Sell
+              {session ? 'Post ad' : 'Sign in' }
             </Button>
             </Link>
             
@@ -121,7 +121,9 @@ export default function ButtonAppBar() {
                 <MenuItem>Post new Advertisement</MenuItem>
               </Link>
               <Divider  className={classes.divider}/>
-              <MenuItem onClick={() => signOut({ callbackUrl: '/' })} >Logout</MenuItem>
+                <MenuItem onClick={async ({ token, session }) => await signOut({
+                  callbackUrl: '/', token: {},
+                  session: {} })} >Logout</MenuItem>
             </Menu>
             </Container>
           </Toolbar>
