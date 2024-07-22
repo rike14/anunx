@@ -184,7 +184,7 @@ const Signin = ({ NEXTAUTH_URL }) => {
                   <form onSubmit={handleSubmit}>
                     {
                       router.query.i === '1' 
-                      ? setToasty({ message: 'Invalid email or password', type: 'error' })
+                        ? setToasty({ open:true, message: 'Invalid email or password', severity: 'error' })
                       : null
                     }
                     <FormControl fullWidth error={errors.email && touched.email} className={classes.formControl}>

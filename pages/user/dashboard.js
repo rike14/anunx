@@ -94,8 +94,8 @@ const Home = ({ user }) => {
     setOpenConfirmModal(true);
   }
 
-  const handleConfirmRemove = () => {
-    axios.delete('/api/products/delete',
+  const handleConfirmRemove = async () => {
+    await axios.delete('/api/products/delete',
       {
         data: {
           id: productID
@@ -106,12 +106,12 @@ const Home = ({ user }) => {
       .catch(handleError)
   }
 
-  const handleSuccess = () => {
+  const handleSuccess = async () => {
     setOpenConfirmModal(false);
-    setRemoveProducts([...removeProducts, productID]);
+    await setRemoveProducts([...removeProducts, productID]);
     setToasty({
       open: true,
-      type: 'success',
+      severity: 'success',
       message: 'Advertisement removed successfully!'
     })
 
@@ -121,7 +121,7 @@ const Home = ({ user }) => {
     setOpenConfirmModal(false);
     setToasty({
       open: true,
-      type: 'error',
+      severity: 'error',
       message: 'Error removing advertisement!'
     })
   }
