@@ -20,11 +20,11 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getSession, useSession } from 'next-auth/react';
-import FileUpload from '../../../src/components/fileUpload';
-import TemplateDefault from '../../../src/templates/Default';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation'
+import FileUpload from '../../../src/components/fileUpload';
 import useToasty from '../../../src/contexts/Toasty';
+import TemplateDefault from '../../../src/templates/Default';
 
 
 

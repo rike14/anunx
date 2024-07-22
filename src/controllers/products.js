@@ -10,10 +10,9 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: 'uploads',
+        uploadDir: 'public/uploads',
         keepExtensions: true,
     })
-
     form.parse(req, async (error, fields, data) => {
         if (error) {
             return res.status(500).json({ success: true })
@@ -31,17 +30,17 @@ const post = (async (req, res) => {
             const extension = path.extname(file.name)
 
             const filename = `${timestamp}-${random}-${extension}`
-
-            const oldPath = path.join(__dirname, `../../../../../${file.path}`)
-            const newPath = path.join(__dirname, `/${form.uploadDir}/${filename}`)
-
+           
+            const oldPath = path.join(__dirname, '../../../../../' + file.path)
+            const newPath = path.join(__dirname, '../../../../../' + form.uploadDir + '/' + filename)
             
+
             filesToSave.push({ 
                 name: filename, 
                 path: newPath
              })
 
-            fs.rename(oldPath, newPath, (err) => {
+            fs.renameSync(oldPath, newPath, (err) => {
                 if (err) {
                     console.error('Error', err)
                     return res.status(500).json({ message: 'error' })
@@ -97,7 +96,7 @@ const remove = (async (req, res) => {
 
     const id  = req.body.id
     
-    const deleted = await ProductsModel.findOneAndRemove({ _id: id })
+    const deleted = await ProductsModel.findByIdAndDelete({ _id: id })
 
     if (!deleted) return res.status(500).json({ message: 'error' })
 
