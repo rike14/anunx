@@ -31,8 +31,8 @@ const post = (async (req, res) => {
 
             const filename = `${timestamp}-${random}-${extension}`
            
-            const oldPath = path.join(__dirname, '../../../../../' + file.path)
-            const newPath = path.join(__dirname, '../../../../../' + form.uploadDir + '/' + filename)
+            const oldPath = path.join(file.path)
+            const newPath = path.join(form.uploadDir + '/' + filename)
             
 
             filesToSave.push({ 
@@ -139,9 +139,9 @@ const get = (async (req, res) => {
 
 const getByUser = (async (req, res) => {
     await dbConnect()
-    const id = req.query.id
+    const email = req.query.email
     
-    const products = await ProductsModel.find({ 'user.id': id })
+    const products = await ProductsModel.find({ 'user.email': email })
 
     if (!products) return res.status(500).json({ message: 'error' })
 

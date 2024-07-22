@@ -60,7 +60,7 @@ const Home = ({ user }) => {
       const response = await axios.get('/api/products/getByUser',
          {
           params: {
-            id: user._id
+            email: user.email
           }
         }
       );
