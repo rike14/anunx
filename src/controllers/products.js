@@ -122,14 +122,7 @@ const search = (async (req, res) => {
 
 const get = (async (req, res) => {
     await dbConnect()
-    const id = req.query?.id
-    if(id){
-        const product = await ProductsModel.findById({ '_id': id })
 
-        if (!product) return res.status(500).json({ message: 'error' })
-
-        return res.status(200).json({ product })
-    }
     const products = await ProductsModel.aggregate([{ $limit: 6 }])
 
     if (!products) return res.status(500).json({ message: 'error' })
@@ -137,10 +130,22 @@ const get = (async (req, res) => {
     return res.status(200).json({ products })
 })
 
-const getByUser = (async (req, res) => {
+const getProductById = (async (req, res) => {
+    const id = req.query?.id
+
+    if (!id) return res.status(500).json({ message: 'error' })
+
+    const product = await ProductsModel.findById({ '_id': id })
+
+    if (!product) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ product })
+})
+
+const getProductByUser = (async (req, res) => {
     await dbConnect()
     const email = req.query.email
-    
+
     const products = await ProductsModel.find({ 'user.email': email })
 
     if (!products) return res.status(500).json({ message: 'error' })
@@ -149,7 +154,7 @@ const getByUser = (async (req, res) => {
 })
 
 export {
-    get, getByUser, post,
+    get, getProductById, getProductByUser, post,
     remove, search
 };
 

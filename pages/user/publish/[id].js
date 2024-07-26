@@ -20,6 +20,7 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import FileUpload from '../../../src/components/fileUpload';
 import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
@@ -80,7 +81,7 @@ const validationSchema = yup.object().shape({
 
     phone: yup.number()
         .required('Phone is required'),
-    
+
     city: yup.string()
         .required('City is required'),
 
@@ -90,10 +91,40 @@ const validationSchema = yup.object().shape({
 
 }) 
 
-const Publish = ({ userId, image, email }) => {
+const EditProduct = ({ userId, image, productID }) => {
     const classes = useStyles()
     const router = useRouter()
+    const [product, setProduct] = useState([])
+    const [loading, setLoading] = useState(false);
     const { setToasty } = useToasty();
+
+    const getProducts = async () => {
+        setLoading(true);
+        const response = await axios.get('/api/products/getProductById',
+            {
+                params: {
+                    id: productID
+                }
+            }
+        );
+        setProduct(response.data.product);
+
+    }
+
+    useEffect(() => {
+        if (productID){
+            getProducts()
+                .then(() => setLoading(false))
+                .catch(() => {
+                    setLoading(false);
+                    setToasty({
+                        open: true,
+                        message: 'Error when loading products',
+                        severity: 'error',
+                    })
+                })
+        }
+    }, []);
 
     const formValues = {
         ...initialValues,
@@ -122,12 +153,12 @@ const Publish = ({ userId, image, email }) => {
     const handleFormSubmit = (values) => {
         const formData = new FormData()
 
-        for(let field in values){
-            if(field === 'files'){
+        for (let field in values) {
+            if (field === 'files') {
                 values.files.forEach(file => {
                     formData.append('files', file)
                 })
-            }else{
+            } else {
                 formData.append(field, values[field])
             }
         }
@@ -135,7 +166,7 @@ const Publish = ({ userId, image, email }) => {
         axios.post('/api/products/post', formData)
             .then(handleSuccess)
             .catch(handleError)
-        
+
     }
 
 
@@ -147,17 +178,17 @@ const Publish = ({ userId, image, email }) => {
                 onSubmit={handleFormSubmit}
             >
                 {
-                ({
-                    touched,
-                    values,
-                    errors,
-                    handleChange,
-                    handleSubmit,
-                    setFieldValue,
-                    isSubmitting,
-                }) => {
-                    
-                       
+                    ({
+                        touched,
+                        values,
+                        errors,
+                        handleChange,
+                        handleSubmit,
+                        setFieldValue,
+                        isSubmitting,
+                    }) => {
+
+
 
                         return (
                             <form onSubmit={handleSubmit}>
@@ -175,37 +206,37 @@ const Publish = ({ userId, image, email }) => {
                                     <Box className={classes.box}>
                                         <FormControl error={errors.title && touched.title} fullWidth>
                                             <InputLabel className={classes.inputLabel}>Advertisement Title</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='title'
-                                                value={values.title}
+                                                value={product?.title ?? values.title}
                                                 onChange={handleChange}
                                             />
-                                            <FormHelperText>{errors.title && touched.title ? errors.title : null }</FormHelperText>
+                                            <FormHelperText>{errors.title && touched.title ? errors.title : null}</FormHelperText>
                                         </FormControl>
                                         <br /><br />
-                                        <FormControl error={errors.category && touched.category } fullWidth>
+                                        <FormControl error={errors.category && touched.category} fullWidth>
                                             <InputLabel className={classes.inputLabel}>Category</InputLabel>
                                             <Select
-                                            name='category'
-                                            value={values.category}
-                                            onChange={handleChange}
-                                            fullWidth
+                                                name='category'
+                                                value={product?.category ?? values.category}
+                                                onChange={handleChange}
+                                                fullWidth
                                             >
-                                            <MenuItem value='Notebook'>Notebook</MenuItem>
-                                            <MenuItem value='Cell Phone'>Cell phone</MenuItem>
-                                            <MenuItem value='Video game'>Video game</MenuItem>
+                                                <MenuItem value='Notebook'>Notebook</MenuItem>
+                                                <MenuItem value='Cell Phone'>Cell phone</MenuItem>
+                                                <MenuItem value='Video game'>Video game</MenuItem>
                                             </Select>
-                                            <FormHelperText>{errors.category && touched.category  ? errors.category : null }</FormHelperText>
+                                            <FormHelperText>{errors.category && touched.category ? errors.category : null}</FormHelperText>
                                         </FormControl>
                                     </Box>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
                                     <Box className={classes.box}>
-                                      <FileUpload
-                                        files={values.files}
-                                        errors={errors.files}
-                                        touched={touched.files}
-                                        setFieldValue={setFieldValue}
+                                        <FileUpload
+                                            files={product?.files ?? values.files}
+                                            errors={errors.files}
+                                            touched={touched.files}
+                                            setFieldValue={setFieldValue}
                                         />
                                     </Box>
                                 </Container>
@@ -216,15 +247,15 @@ const Publish = ({ userId, image, email }) => {
                                         </Typography>
                                         <FormControl error={errors.description && touched.description} fullWidth>
                                             <InputLabel className={classes.inputLabel}> Describe your product in detail</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='description'
-                                                value={values.description}
+                                                value={product?.description ?? values.description}
                                                 minRows={6}
                                                 multiline
                                                 onChange={handleChange}
                                                 variant='outlined'
                                             />
-                                            <FormHelperText>{errors.description && touched.description ? errors.description : null }</FormHelperText>
+                                            <FormHelperText>{errors.description && touched.description ? errors.description : null}</FormHelperText>
                                         </FormControl>
                                     </Box>
                                 </Container>
@@ -232,14 +263,14 @@ const Publish = ({ userId, image, email }) => {
                                     <Box className={classes.box}>
                                         <FormControl error={errors.price && touched.price} fullWidth>
                                             <InputLabel className={classes.inputLabel}>Price</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='price'
-                                                value={values.price}
+                                                value={product?.price ?? values.price}
                                                 variant='outlined'
                                                 onChange={handleChange}
                                                 startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                             />
-                                            <FormHelperText>{errors.price && touched.price  ? errors.price : null }</FormHelperText>
+                                            <FormHelperText>{errors.price && touched.price ? errors.price : null}</FormHelperText>
                                         </FormControl>
                                     </Box>
                                 </Container>
@@ -250,53 +281,53 @@ const Publish = ({ userId, image, email }) => {
                                         </Typography>
                                         <FormControl error={errors.name && touched.name} fullWidth>
                                             <InputLabel className={classes.inputLabel}>Name</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='name'
-                                                value={values.name}
+                                                value={product?.user?.name ?? values.name}
                                                 onChange={handleChange}
                                             />
-                                            <FormHelperText>{errors.name && touched.name  ? errors.name : null }</FormHelperText> 
+                                            <FormHelperText>{errors.name && touched.name ? errors.name : null}</FormHelperText>
                                         </FormControl>
                                         <br /><br />
                                         <FormControl error={errors.email && touched.email} fullWidth>
                                             <InputLabel className={classes.inputLabel}>E-mail</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='email'
-                                                value={values.email}
+                                                value={product?.user?.email ?? values.email}
                                                 onChange={handleChange}
                                             />
-                                            <FormHelperText>{errors.email && touched.email  ? errors.email : null }</FormHelperText>
+                                            <FormHelperText>{errors.email && touched.email ? errors.email : null}</FormHelperText>
                                         </FormControl>
                                         <br /><br />
                                         <FormControl error={errors.phone && touched.phone} fullWidth>
                                             <InputLabel className={classes.inputLabel}>Phone</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='phone'
-                                                value={values.phone}
+                                                value={product?.user?.phone ?? values.phone}
                                                 onChange={handleChange}
                                             />
-                                            <FormHelperText>{errors.phone && touched.phone  ? errors.phone : null }</FormHelperText>
+                                            <FormHelperText>{errors.phone && touched.phone ? errors.phone : null}</FormHelperText>
                                         </FormControl>
                                         <br /><br />
                                         <FormControl error={errors.city && touched.city} fullWidth>
                                             <InputLabel className={classes.inputLabel}>City</InputLabel>
-                                            <Input 
+                                            <Input
                                                 name='city'
-                                                value={values.city}
+                                                value={product?.user?.city ?? values.city}
                                                 onChange={handleChange}
                                             />
-                                            <FormHelperText>{errors.city && touched.city ? errors.city : null }</FormHelperText>
+                                            <FormHelperText>{errors.city && touched.city ? errors.city : null}</FormHelperText>
                                         </FormControl>
                                     </Box>
                                 </Container>
                                 <Container maxWidth="md" className={classes.boxContainer}>
                                     {
-                                        isSubmitting 
-                                        
+                                        isSubmitting
+
                                             ? <CircularProgress />
                                             : <Button type='submit' variant='contained' color='primary'>
                                                 Publish
-                                              </Button>
+                                            </Button>
                                     }
                                 </Container>
                             </form>
@@ -308,21 +339,22 @@ const Publish = ({ userId, image, email }) => {
     )
 }
 
-Publish.requireAuth = true
+EditProduct.requireAuth = true
 
-export async function getServerSideProps( req ) {
+export async function getServerSideProps(req ) {
     const session = await getSession(req)
-    
-    if(!session){
-        return {props: {}}
+    const { id } = req.query;
+
+    if (!session) {
+        return { props: {} }
     }
     return {
         props: {
             userId: session.user.id,
             image: session.user.image ?? '/images/anunx-logo.png',
-            email: session.user.email
+            productID: JSON.parse(JSON.stringify(id)), 
         }
     }
 }
 
-export default Publish
+export default EditProduct

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { forwardRef, useEffect, useState } from 'react'
-import slugify from 'slugify'
 import UsersModel from '../../src/models/users'
 import dbConnect from '../../src/utils/dbConnect'
 
@@ -57,7 +56,7 @@ const Home = ({ user }) => {
   
   const getProducts = async () => {
       setLoading(true);
-      const response = await axios.get('/api/products/getByUser',
+    const response = await axios.get('/api/products/getProductByUser',
          {
           params: {
             email: user.email
@@ -169,8 +168,6 @@ const Home = ({ user }) => {
           { !loading &&
             products.map((product, key) => {
               if(removeProducts.includes(product._id)) return null
-              const category = slugify(product.category, { lower: true });
-              const title = slugify(product.title, { lower: true });
 
               return (
               <Grid item xs={12} sm={6} md={4} key={key}>

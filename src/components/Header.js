@@ -80,14 +80,14 @@ export default function ButtonAppBar() {
             </Container>
             <Container maxWidth="lg" className={classes.menuContainer}>
 
-            <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
+            <Link href={ session?.user ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
-              {session ? 'Post ad' : 'Sign in' }
+              {session?.user ? 'Post ad' : 'Sign in' }
             </Button>
             </Link>
             
             {
-              session 
+              session?.user
                 ? (
                   <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
                     {
@@ -121,7 +121,7 @@ export default function ButtonAppBar() {
                 <MenuItem>Post new Advertisement</MenuItem>
               </Link>
               <Divider  className={classes.divider}/>
-                <MenuItem onClick={async ({ token, session }) => await signOut({
+                <MenuItem onClick={() => signOut({
                   callbackUrl: '/', token: {},
                   session: {} })} >Logout</MenuItem>
             </Menu>
