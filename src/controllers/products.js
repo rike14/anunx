@@ -10,7 +10,7 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: 'public/uploads',
+        uploadDir: process.env.NODE_ENV === 'development' ? 'public/uploads' : 'uploads',
         keepExtensions: true,
     })
     form.parse(req, async (error, fields, data) => {
