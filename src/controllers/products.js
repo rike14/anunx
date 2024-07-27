@@ -30,15 +30,9 @@ const post = (async (req, res) => {
             const extension = path.extname(file.name)
 
             const filename = `${timestamp}-${random}-${extension}`
-           
+
             const oldPath = path.join(file.path)
             const newPath = path.join(form.uploadDir + '/' + filename)
-            
-
-            filesToSave.push({ 
-                name: filename, 
-                path: newPath
-             })
 
             fs.renameSync(oldPath, newPath, (err) => {
                 if (err) {
@@ -47,6 +41,10 @@ const post = (async (req, res) => {
                 }
             })
             
+            filesToSave.push({ 
+                name: filename, 
+                path: newPath
+            })
 
         })
 
