@@ -319,7 +319,7 @@ export async function getServerSideProps( req ) {
     return {
         props: {
             userId: session.user.id,
-            image: session.user.image ?? '/images/anunx-logo.png',
+            image: session.user?.image,
             email: session.user.email
         }
     }

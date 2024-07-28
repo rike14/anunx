@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ButtonAppBar() {
-  const {data: session} = useSession();
+  const {data: session, status} = useSession();
   const [anchorUserMenu, setAnchorUserMenu] = useState(false);
   const classes = useStyles();
   const openUserMenu = Boolean(anchorUserMenu);
@@ -80,14 +80,14 @@ export default function ButtonAppBar() {
             </Container>
             <Container maxWidth="lg" className={classes.menuContainer}>
 
-            <Link href={ session?.user ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
+            <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
-              {session?.user ? 'Post ad' : 'Sign in' }
+              {session ? 'Post ad' : 'Sign in' }
             </Button>
             </Link>
             
             {
-              session?.user
+              status === "authenticated"
                 ? (
                   <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
                     {

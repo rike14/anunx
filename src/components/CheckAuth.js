@@ -4,18 +4,17 @@ import { useEffect } from "react";
 import Loading from "./Loading";
 
 const CheckAuth = ({ Component, pageProps }) => {
-  const {data: session} = useSession();
+  const { data: session, status } = useSession()
   const router = useRouter();
-  const user = pageProps.userId;
-  
+
   useEffect(() => {
     
-    if (!session && !user) {
+    if (!session && status === "unauthenticated") {
       router.push('/');
     }
   }, [session]);
 
-    if (session) {
+  if (session && status === 'authenticated') {
        return <Component {...pageProps} />;
     }
 

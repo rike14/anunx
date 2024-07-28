@@ -76,7 +76,7 @@ const validationSchema = yup.object().shape({
 })
 
 const Signin = ({ NEXTAUTH_URL }) => {
-  const {data: session} = useSession()
+  const { data: session, status } = useSession()
   const classes = useStyles()
   const router = useRouter()
   const { setToasty } = useToasty()
@@ -84,8 +84,7 @@ const Signin = ({ NEXTAUTH_URL }) => {
 
 
   useEffect(() => {
-
-    if (session) {
+    if (session && status === "authenticated") {
       router.push('/user/dashboard');
     }
   }, [session]);
