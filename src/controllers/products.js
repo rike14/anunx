@@ -1,5 +1,4 @@
 import formidable from 'formidable-serverless';
-import fs from 'fs';
 import path from 'path';
 import ProductsModel from '../models/products';
 import dbConnect from '../utils/dbConnect';
@@ -10,7 +9,7 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: process.env.NODE_ENV === 'development' ? 'public/uploads' : 'uploads',
+        uploadDir: 'public/uploads',
         keepExtensions: true,
     })
     form.parse(req, async (error, fields, data) => {
@@ -29,21 +28,23 @@ const post = (async (req, res) => {
             const random = Math.floor(Math.random() * 999999) + 1
             const extension = path.extname(file.name)
 
-            const filename = `${timestamp}-${random}-${extension}`
+            const pathname = file.path.split('\\')
+            // const filename = `${timestamp}-${random}-${extension}`
+            const filename = pathname[2]
 
-            const oldPath = path.join(file.path)
+            // const oldPath = path.join(file.path)
             const newPath = path.join(form.uploadDir + '/' + filename)
 
-            fs.renameSync(oldPath, newPath, (err) => {
-                if (err) {
-                    console.error('Error', err)
-                    return res.status(500).json({ message: 'error' })
-                }
-            })
+            // fs.renameSync(oldPath, newPath, (err) => {
+            //     if (err) {
+            //         console.error('Error', err)
+            //         return res.status(500).json({ message: 'error' })
+            //     }
+            // })
             
             filesToSave.push({ 
                 name: filename, 
-                path: newPath
+                path: 'uploads/' + filename
             })
 
         })
