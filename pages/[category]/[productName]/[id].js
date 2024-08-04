@@ -13,11 +13,11 @@ import {
 } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
+import Loading from '../../../src/components/Loading';
 import ProductsModel from '../../../src/models/products';
 import TemplateDefault from '../../../src/templates/Default';
 import { formatCurrency } from '../../../src/utils/currency';
 import dbConnect from '../../../src/utils/dbConnect';
-import Loading from '../../../src/components/Loading'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +87,7 @@ const Product = ({ product }) => {
                                     product.files.map((file, index) => (
                                         <Card className={classes.card} key={index}>
                                             <CardMedia className={classes.cardMedia}
-                                                image={`/uploads/${file.name}`}
+                                                image={file.path}
                                                 title={product.title}
                                             />
                                         </Card>

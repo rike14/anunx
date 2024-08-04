@@ -1,5 +1,4 @@
 import formidable from 'formidable-serverless';
-import path from 'path';
 import ProductsModel from '../models/products';
 import dbConnect from '../utils/dbConnect';
 
@@ -12,43 +11,25 @@ const post = (async (req, res) => {
         uploadDir: 'public/uploads',
         keepExtensions: true,
     })
-    form.parse(req, async (error, fields, data) => {
+
+    form.parse(req, async (error, fields) => {
         if (error) {
             return res.status(500).json({ success: true })
         }
 
-        const { files } = data
+        const { files } = fields
 
-        const fileToRename = files instanceof Array ? files : [ files ]
+        const filesParser = JSON.parse(files)
 
         const filesToSave = []
 
-        fileToRename.forEach(async file => {
-            const timestamp = Date.now()
-            const random = Math.floor(Math.random() * 999999) + 1
-            const extension = path.extname(file.name)
-
-            const pathname = file.path.split('\\')
-            // const filename = `${timestamp}-${random}-${extension}`
-            const filename = pathname[2]
-
-            // const oldPath = path.join(file.path)
-            const newPath = path.join(form.uploadDir + '/' + filename)
-
-            // fs.renameSync(oldPath, newPath, (err) => {
-            //     if (err) {
-            //         console.error('Error', err)
-            //         return res.status(500).json({ message: 'error' })
-            //     }
-            // })
-            
+        filesParser.files.forEach(async file => {
             filesToSave.push({ 
-                name: filename, 
-                path: 'uploads/' + filename
-            })
-
+                    name: file.pathname, 
+                    path: file.url
+                })
         })
-
+            
         const { 
             title, 
             category, 

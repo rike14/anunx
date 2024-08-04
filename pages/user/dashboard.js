@@ -88,7 +88,8 @@ const Home = ({ user }) => {
       })
   }, []);
 
-  const handleClickRemove = (productId) => {
+  const handleClickRemove = (product) => {
+    const productId = product._id
     setProductID(productId);
     setOpenConfirmModal(true);
   }
@@ -106,6 +107,19 @@ const Home = ({ user }) => {
   }
 
   const handleSuccess = async () => {
+    const product = products.filter(product => product._id == productID)
+    const filesProduct = product[0].files
+
+    filesProduct.map(async file => {
+      await fetch(
+        `/api/upload/delete`,
+        {
+          method: 'delete',
+          body: JSON.stringify(file.path),
+        },
+      );
+    })
+    
     setOpenConfirmModal(false);
     await setRemoveProducts([...removeProducts, productID]);
     setToasty({
@@ -172,7 +186,7 @@ const Home = ({ user }) => {
               return (
               <Grid item xs={12} sm={6} md={4} key={key}>
                 <Card 
-                  image={`/uploads/${product.files[0].name}`}
+                  image={product.files[0].path}
                   title={product.title}
                   subtitle={formatCurrency(product.price)}
                   actions={
@@ -191,7 +205,7 @@ const Home = ({ user }) => {
                         variant="contained"
                         className={classes.buttonRemove }
                         startIcon={<DeleteIcon />}
-                        onClick={() => handleClickRemove(product._id)}
+                        onClick={() => handleClickRemove(product)}
                       >
                         Remove
                       </Button>

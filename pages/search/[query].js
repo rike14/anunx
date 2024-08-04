@@ -1,10 +1,10 @@
-import dbConnect from "../../src/utils/dbConnect";
-import ProductsModel from "../../src/models/products";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import slugify from "slugify";
+import ProductsModel from "../../src/models/products";
+import dbConnect from "../../src/utils/dbConnect";
 
 import {
     Box,
@@ -135,7 +135,7 @@ const Search = ({ q, products }) => {
                                         <Grid item key={key} xs={12} sm={6} md={4}>
                                             <Link href={`/${category}/${title}/${product._id}`} className={classes.productLink} onClick={() => handleClick()}>
                                                 <Card
-                                                    image={`/uploads/${product.files[0].name}`}
+                                                    image={product.files[0].path}
                                                     title={product.title}
                                                     subtitle={formatCurrency(product.price)}
                                                     href={`/${category}/${title}/${product._id}`}
