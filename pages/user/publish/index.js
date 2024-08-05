@@ -127,8 +127,8 @@ const Publish = ({ userId, image, email }) => {
                 let files = []
                 values.files.forEach(file => {
                     const fileObj = {}
-                    fileObj.name = file.pathname
-                    fileObj.path = file.url
+                    fileObj.name = file.name
+                    fileObj.path = file.path
                     files.push(fileObj)
                 })
                 formData.append('files', JSON.stringify({'files': files}) )
