@@ -8,26 +8,36 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         marginTop: 15,
         flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        width: '100%'
     },
-    dropZone: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+    boxLoading: {
+        height: 300,
         textAlign: 'center',
-        padding: 10,
-        margin: '0 10px 10px 0',
-        width: 200,
-        height: 150,
-        backgroundColor: theme.palette.background.default,
-        border: '2px dashed black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex',
+        background: '#e9f3fe',
+        border: '3px dashed rgb(210, 227, 244)',
+
     },
+    imgUpload: {
+        width: '100%',
+        height: 120,
+
+        '@media (max-width: 600px)': {
+            height: 200,
+        }
+    },
+    
     thumb: {
         position: 'relative',
-        width: 200,
-        height: 150,
+        width:  '32%',
+        height: 200,
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
-        margin: '0 15px 15px 0',
+        marginBottom: '15px',
+        marginRight: '8px',
 
         '& $mainImage': {
             position: 'absolute',
@@ -51,7 +61,43 @@ const useStyles = makeStyles((theme) => ({
             height: '100%',
             width: '100%',
         },
+
+        '@media (max-width: 600px)': {
+            width: '100%',
+            height: 250,
+            margin: '15px 0',
+        }
     },
+    fileUpload: {
+        width: '32%',
+        marginBottom: '20px', 
+        marginRight: '8px',
+        textAlign: 'center',
+        border: '3px dashed rgb(210, 227, 244)',
+        padding: '0.6rem',
+        position: 'relative',
+        cursor: 'pointer',
+        background: '#e9f3fe',
+            
+            '@media (max-width: 600px)' : {
+                width: '100%'
+            }
+    },
+    fileUploadInput: {
+        display: 'block',
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        opacity: 0,
+        cursor: 'pointer',
+    },
+    files: {
+        display: 'contents',
+    }
 
 }))
 

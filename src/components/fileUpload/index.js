@@ -1,41 +1,41 @@
+'use client';
 import {
-    Typography,
     Box,
     IconButton,
-} from '@material-ui/core'
-import { DeleteForever } from '@material-ui/icons'
-import { useDropzone } from 'react-dropzone'
+    Typography,
+} from '@material-ui/core';
+import { DeleteForever } from '@material-ui/icons';
 
-import useStyles from './styles'
+import { useRef, useState } from 'react';
+
+import Loading from '../Loading';
+import useStyles from './styles';
 
 const FileUpload = ({files, errors, touched, setFieldValue}) => {
     const classes = useStyles()
+    const inputFileRef = useRef(null);
+    const [loading, setLoading] = useState(false)
 
-    const {
-        getRootProps,
-        getInputProps
-    } = useDropzone({
-        accept: 'image/*',
-        onDrop: (acceptedFiles) => {
-            const newFiles = acceptedFiles.map((file) => {
-                return Object.assign(file, {
-                    preview: URL.createObjectURL(file),
-                })
-            })
+    const handleRemoveFile = async fileUrl => {
+        setLoading(true)
+        const response = await fetch(
+            `/api/upload/delete`,
+            {
+                method: 'delete',
+                body: JSON.stringify(fileUrl),
+            },
+        );
+        if(response.status == 200){
+            const newFileState = files.filter(file => file.path !== fileUrl)
+            setFieldValue('files', newFileState)
+        }
+        setLoading(false)
 
-            setFieldValue('files', [
-                ...files,
-                ...newFiles
-            ])
-        },
-    })
-
-    const handleRemoveFile = fileName => {
-        const newFileState = files.filter(file => file.name !== fileName)
-        setFieldValue('files', newFileState)
     }
     return ( 
         <>
+            {loading ? <Box className={classes.boxLoading}><Loading /></Box> :
+            <>
             <Typography variant="h6" component="h6" align='left' color={errors && touched ? 'error' : 'textPrimary'}>
                 Images
             </Typography>
@@ -50,39 +50,69 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
                 : null
             }
             <Box className={classes.thumbsContainer}>
-                <Box className={classes.dropZone} {...getRootProps()}>
-                    <input name='files' {...getInputProps()} />
-                    <Typography variant='p' color='textPrimary'>
-                        Click here to upload images.
-                    </Typography>
-                </Box>
-                {
-                    files.map((file, index) => (
-                    
-                        <Box
-                            key={file.name}
-                            className={classes.thumb}
-                            style={{ backgroundImage: `url(${file.preview})` }}
-                        >   
-                            {
-                                index === 0 ?
-                                <Box className={classes.mainImage}>
-                                    <Typography variant='body1' color='secondary'>
-                                        Main
-                                    </Typography>
-                                </Box>
-                                : null
+                <Box className={classes.fileUpload}
+                        onChange={async () => {
+                            setLoading(true)
+                            
+                            const file = inputFileRef.current.files[0];
+                            if(file){
+                                const response = await fetch(
+                                    `/api/upload/post?filename=${file.name}`,
+                                    {
+                                        method: 'POST',
+                                        body: file,
+                                    },
+                                );
+                                
+                                const fileBlob = (await response.json());
+                                const fileToArray = [{ 'name': fileBlob.pathname, 'path': fileBlob.url}]
+
+                                setFieldValue('files', [
+                                    ...files,
+                                    ...fileToArray
+                                ])
                             }
-                            <Box className={classes.mask}>
-                                <IconButton color='secondary' onClick={() => handleRemoveFile(file.name)}>
-                                    <DeleteForever fontSize='large'/>
-                                </IconButton>
+                            setLoading(false)
+                        }}
+                    >    
+                    
+                    <img src="/images/img_upload.jpg" className={classes.imgUpload}/>
+                    <Typography variant='h6' color='textPrimary'>Click box to upload</Typography>
+                    <Typography variant='p' color='textPrimary'>Maximum file size 4.5mb</Typography>
+                    <input name="files" className={classes.fileUploadInput} ref={inputFileRef} type="file" />
+                    
+                </Box>
+
+                <Box className={classes.files}>
+                    {
+                        files.map((file, index) => (
+                            <Box
+                                key={file.path}
+                                className={classes.thumb}
+                                style={{ backgroundImage: `url(${file.path})` }}
+                            >
+                                {
+                                    index === 0 ?
+                                        <Box className={classes.mainImage}>
+                                            <Typography variant='body1' color='secondary'>
+                                                Main
+                                            </Typography>
+                                        </Box>
+                                        : null
+                                }
+                                <Box className={classes.mask}>
+                                    <IconButton color='secondary' onClick={() => handleRemoveFile(file.path)}>
+                                        <DeleteForever fontSize='large' />
+                                    </IconButton>
+                                </Box>
                             </Box>
-                        </Box>
-                    ))
-                }
+                        ))
+                    }
+                </Box>
 
             </Box>
+                </>
+            }
         </>
     )
 }

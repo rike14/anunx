@@ -1,9 +1,9 @@
 import { createRouter } from 'next-connect';
-import { getByUser } from '../../../src/controllers/products';
+import { getProductByUser } from '../../../src/controllers/products';
 
 const route = createRouter();
 
-route.get(getByUser);
+route.get(getProductByUser);
 
 export default route.handler();
 

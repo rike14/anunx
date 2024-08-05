@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ButtonAppBar() {
-  const {data: session} = useSession();
+  const {data: session, status} = useSession();
   const [anchorUserMenu, setAnchorUserMenu] = useState(false);
   const classes = useStyles();
   const openUserMenu = Boolean(anchorUserMenu);
@@ -82,12 +82,12 @@ export default function ButtonAppBar() {
 
             <Link href={ session ? '/user/publish' : '/auth/signin' } passHref className={classes.link}>
             <Button color="inherit" variant='outlined' className={classes.headerButton}>
-              Advertise and Sell
+              {session ? 'Post ad' : 'Sign in' }
             </Button>
             </Link>
             
             {
-              session 
+              status === "authenticated"
                 ? (
                   <IconButton color='secondary' onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
                     {
@@ -121,7 +121,9 @@ export default function ButtonAppBar() {
                 <MenuItem>Post new Advertisement</MenuItem>
               </Link>
               <Divider  className={classes.divider}/>
-              <MenuItem onClick={() => signOut({ callbackUrl: '/' })} >Logout</MenuItem>
+                <MenuItem onClick={() => signOut({
+                  callbackUrl: '/', token: {},
+                  session: {} })} >Logout</MenuItem>
             </Menu>
             </Container>
           </Toolbar>

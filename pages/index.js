@@ -134,7 +134,7 @@ const Home = () => {
                                     <Link href={`/${category}/${title}/${product._id}`} className={classes.productLink} onClick={() => handleClick()}>
                                         <Card
                                             
-                                            image={`/uploads/${product.files[0].name}`}
+                                            image={product.files[0].path}
                                             title={product.title}
                                             subtitle={formatCurrency(product.price)}
                                         />

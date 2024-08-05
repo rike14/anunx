@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { forwardRef, useEffect, useState } from 'react'
-import slugify from 'slugify'
 import UsersModel from '../../src/models/users'
 import dbConnect from '../../src/utils/dbConnect'
 
@@ -38,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: '#d32f2f',
     }
+  },
+  title: {
+    textWrap: 'wrap'
   }
 }))
 
@@ -57,14 +59,19 @@ const Home = ({ user }) => {
   
   const getProducts = async () => {
       setLoading(true);
-      const response = await axios.get('/api/products/getByUser',
+    const response = await axios.get('/api/products/getProductByUser',
          {
           params: {
-            id: user._id
+            email: user.email
           }
         }
       );
       setProducts(response.data.products);
+  }
+
+  const handleClickGoToPostAd = async () => {
+    setLoading(true);
+    router.push('/user/publish') 
   }
 
   useEffect(() => {
@@ -84,13 +91,14 @@ const Home = ({ user }) => {
       })
   }, []);
 
-  const handleClickRemove = (productId) => {
+  const handleClickRemove = (product) => {
+    const productId = product._id
     setProductID(productId);
     setOpenConfirmModal(true);
   }
 
-  const handleConfirmRemove = () => {
-    axios.delete('/api/products/delete',
+  const handleConfirmRemove = async () => {
+    await axios.delete('/api/products/delete',
       {
         data: {
           id: productID
@@ -101,12 +109,25 @@ const Home = ({ user }) => {
       .catch(handleError)
   }
 
-  const handleSuccess = () => {
+  const handleSuccess = async () => {
+    const product = products.filter(product => product._id == productID)
+    const filesProduct = product[0].files
+
+    filesProduct.map(async file => {
+      await fetch(
+        `/api/upload/delete`,
+        {
+          method: 'delete',
+          body: JSON.stringify(file.path),
+        },
+      );
+    })
+    
     setOpenConfirmModal(false);
-    setRemoveProducts([...removeProducts, productID]);
+    await setRemoveProducts([...removeProducts, productID]);
     setToasty({
       open: true,
-      type: 'success',
+      severity: 'success',
       message: 'Advertisement removed successfully!'
     })
 
@@ -116,7 +137,7 @@ const Home = ({ user }) => {
     setOpenConfirmModal(false);
     setToasty({
       open: true,
-      type: 'error',
+      severity: 'error',
       message: 'Error removing advertisement!'
     })
   }
@@ -149,7 +170,7 @@ const Home = ({ user }) => {
         <Typography component="h1" variant="h4" align='center'>
           My Advertisement
         </Typography>
-        <Button href="/user/publish" variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
+        <Button  onClick={handleClickGoToPostAd} variant='contained' color='primary' className={classes.buttonAdd}>Post new Advertisement</Button>
       </Container>
       <Container maxWidth="md" >
         {loading && <Loading />}
@@ -164,13 +185,12 @@ const Home = ({ user }) => {
           { !loading &&
             products.map((product, key) => {
               if(removeProducts.includes(product._id)) return null
-              const category = slugify(product.category, { lower: true });
-              const title = slugify(product.title, { lower: true });
 
               return (
               <Grid item xs={12} sm={6} md={4} key={key}>
                 <Card 
-                  image={`/uploads/${product.files[0].name}`}
+                  className={classes.title}
+                  image={product.files[0].path}
                   title={product.title}
                   subtitle={formatCurrency(product.price)}
                   actions={
@@ -179,7 +199,7 @@ const Home = ({ user }) => {
                         size='small' 
                         color='primary'
                         variant="contained"
-                        href={`/${category}/${title}/${product._id}`}
+                        href={`/user/publish/${product._id}`}
                         startIcon={<EditIcon />}
                       >
                         Edit
@@ -189,7 +209,7 @@ const Home = ({ user }) => {
                         variant="contained"
                         className={classes.buttonRemove }
                         startIcon={<DeleteIcon />}
-                        onClick={() => handleClickRemove(product._id)}
+                        onClick={() => handleClickRemove(product)}
                       >
                         Remove
                       </Button>

@@ -1,6 +1,4 @@
 import formidable from 'formidable-serverless';
-import fs from 'fs';
-import path from 'path';
 import ProductsModel from '../models/products';
 import dbConnect from '../utils/dbConnect';
 
@@ -10,47 +8,18 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: 'uploads',
         keepExtensions: true,
     })
 
-    form.parse(req, async (error, fields, data) => {
+    form.parse(req, async (error, fields) => {
         if (error) {
             return res.status(500).json({ success: true })
         }
 
-        const { files } = data
+        const { files } = fields
 
-        const fileToRename = files instanceof Array ? files : [ files ]
-
-        const filesToSave = []
-
-        fileToRename.forEach(async file => {
-            const timestamp = Date.now()
-            const random = Math.floor(Math.random() * 999999) + 1
-            const extension = path.extname(file.name)
-
-            const filename = `${timestamp}-${random}-${extension}`
-
-            const oldPath = path.join(__dirname, `../../../../../${file.path}`)
-            const newPath = path.join(__dirname, `/${form.uploadDir}/${filename}`)
-
+        const filesParser = JSON.parse(files)
             
-            filesToSave.push({ 
-                name: filename, 
-                path: newPath
-             })
-
-            fs.rename(oldPath, newPath, (err) => {
-                if (err) {
-                    console.error('Error', err)
-                    return res.status(500).json({ message: 'error' })
-                }
-            })
-            
-
-        })
-
         const { 
             title, 
             category, 
@@ -63,8 +32,9 @@ const post = (async (req, res) => {
             image,
             city,
         } = fields
-
+        
         const product = new ProductsModel({
+            _id: fields.id ?? null,
             title,
             category,
             description,
@@ -77,11 +47,11 @@ const post = (async (req, res) => {
                 image: image == 'null' ? null : image,
                 city,
             },
-            files: filesToSave,
+            files: filesParser.files,
             date : Date.now(),
         })
-
-        const savedProduct = await product.save()
+       
+        const savedProduct = fields.id ? await ProductsModel.findByIdAndUpdate({ _id: fields.id }, product) : await product.save()
 
         if(!savedProduct) return res.status(500).json({ message: 'error' })
 
@@ -97,7 +67,7 @@ const remove = (async (req, res) => {
 
     const id  = req.body.id
     
-    const deleted = await ProductsModel.findOneAndRemove({ _id: id })
+    const deleted = await ProductsModel.findByIdAndDelete({ _id: id })
 
     if (!deleted) return res.status(500).json({ message: 'error' })
 
@@ -131,11 +101,23 @@ const get = (async (req, res) => {
     return res.status(200).json({ products })
 })
 
-const getByUser = (async (req, res) => {
+const getProductById = (async (req, res) => {
+    const id = req.query?.id
+
+    if (!id) return res.status(500).json({ message: 'error' })
+
+    const product = await ProductsModel.findById({ '_id': id })
+
+    if (!product) return res.status(500).json({ message: 'error' })
+
+    return res.status(200).json({ product })
+})
+
+const getProductByUser = (async (req, res) => {
     await dbConnect()
-    const id = req.query.id
-    
-    const products = await ProductsModel.find({ 'user.id': id })
+    const email = req.query.email
+
+    const products = await ProductsModel.find({ 'user.email': email })
 
     if (!products) return res.status(500).json({ message: 'error' })
 
@@ -143,7 +125,7 @@ const getByUser = (async (req, res) => {
 })
 
 export {
-    get, getByUser, post,
+    get, getProductById, getProductByUser, post,
     remove, search
 };
 
