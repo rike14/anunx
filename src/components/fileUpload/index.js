@@ -26,7 +26,7 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
             },
         );
         if(response.status == 200){
-            const newFileState = files.filter(file => file.url !== fileUrl)
+            const newFileState = files.filter(file => file.path !== fileUrl)
             setFieldValue('files', newFileState)
         }
         setLoading(false)
@@ -64,8 +64,8 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
                                     },
                                 );
                                 
-                                const fileURL = (await response.json());
-                                const fileToArray = [fileURL]
+                                const fileBlob = (await response.json());
+                                const fileToArray = [{ 'name': fileBlob.pathname, 'path': fileBlob.url}]
 
                                 setFieldValue('files', [
                                     ...files,
@@ -87,9 +87,9 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
                     {
                         files.map((file, index) => (
                             <Box
-                                key={file.pathname}
+                                key={file.path}
                                 className={classes.thumb}
-                                style={{ backgroundImage: `url(${file.url})` }}
+                                style={{ backgroundImage: `url(${file.path})` }}
                             >
                                 {
                                     index === 0 ?
@@ -101,7 +101,7 @@ const FileUpload = ({files, errors, touched, setFieldValue}) => {
                                         : null
                                 }
                                 <Box className={classes.mask}>
-                                    <IconButton color='secondary' onClick={() => handleRemoveFile(file.url)}>
+                                    <IconButton color='secondary' onClick={() => handleRemoveFile(file.path)}>
                                         <DeleteForever fontSize='large' />
                                     </IconButton>
                                 </Box>

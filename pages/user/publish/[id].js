@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
+import ProductsModel from '../../../src/models/products';
 
 import {
     Box,
@@ -20,10 +21,11 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import FileUpload from '../../../src/components/fileUpload';
 import useToasty from '../../../src/contexts/Toasty';
 import TemplateDefault from '../../../src/templates/Default';
+import dbConnect from '../../../src/utils/dbConnect';
 
 
 
@@ -45,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const initialValues = {
+    id: '',
     title: '',
     category: '',
     description: '',
@@ -91,58 +94,41 @@ const validationSchema = yup.object().shape({
 
 }) 
 
-const EditProduct = ({ userId, image, productID }) => {
+const EditProduct = ({ userId, image, product }) => {
     const classes = useStyles()
     const router = useRouter()
-    const [product, setProduct] = useState([])
     const [loading, setLoading] = useState(false);
     const { setToasty } = useToasty();
-
-    const getProducts = async () => {
-        setLoading(true);
-        const response = await axios.get('/api/products/getProductById',
-            {
-                params: {
-                    id: productID
-                }
-            }
-        );
-        setProduct(response.data.product);
-
-    }
-
-    useEffect(() => {
-        if (productID){
-            getProducts()
-                .then(() => setLoading(false))
-                .catch(() => {
-                    setLoading(false);
-                    setToasty({
-                        open: true,
-                        message: 'Error when loading products',
-                        severity: 'error',
-                    })
-                })
-        }
-    }, []);
 
     const formValues = {
         ...initialValues,
     }
 
+    formValues.id = product._id
+    formValues.title = product.title
+    formValues.category = product.category
+    formValues.description = product.description
+    formValues.price = product.price
     formValues.userId = userId
     formValues.image = image
-
+    formValues.name = product.user.name
+    formValues.email = product.user.email
+    formValues.phone = product.user.phone
+    formValues.city = product.user.city
+    formValues.files = product.files
+   
     const handleSuccess = () => {
+        setLoading(true)
         setToasty({
             open: true,
             severity: 'success',
-            message: 'Product published successfully'
+            message: 'Product updated successfully'
         })
         router.push('/user/dashboard')
     }
 
     const handleError = () => {
+        setLoading(false)
         setToasty({
             open: true,
             severity: 'error',
@@ -151,13 +137,19 @@ const EditProduct = ({ userId, image, productID }) => {
     }
 
     const handleFormSubmit = (values) => {
+        setLoading(true)
         const formData = new FormData()
-
+        
         for (let field in values) {
             if (field === 'files') {
+                let files = []
                 values.files.forEach(file => {
-                    formData.append('files', file)
+                    const fileObj = {}
+                    fileObj.name = file.name
+                    fileObj.path = file.path
+                    files.push(fileObj)
                 })
+                formData.append('files', JSON.stringify({ 'files': files }))
             } else {
                 formData.append(field, values[field])
             }
@@ -169,13 +161,13 @@ const EditProduct = ({ userId, image, productID }) => {
 
     }
 
-
     return (
         <TemplateDefault>
             <Formik
                 initialValues={formValues}
                 validationSchema={validationSchema}
                 onSubmit={handleFormSubmit}
+                enableReinitialize={true}
             >
                 {
                     ({
@@ -208,7 +200,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>Advertisement Title</InputLabel>
                                             <Input
                                                 name='title'
-                                                value={product?.title ?? values.title}
+                                                value={values.title}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.title && touched.title ? errors.title : null}</FormHelperText>
@@ -218,7 +210,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>Category</InputLabel>
                                             <Select
                                                 name='category'
-                                                value={product?.category ?? values.category}
+                                                value={values.category ?? ''}
                                                 onChange={handleChange}
                                                 fullWidth
                                             >
@@ -233,7 +225,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                 <Container maxWidth="md" className={classes.boxContainer}>
                                     <Box className={classes.box}>
                                         <FileUpload
-                                            files={product?.files ?? values.files}
+                                            files={values.files}
                                             errors={errors.files}
                                             touched={touched.files}
                                             setFieldValue={setFieldValue}
@@ -249,7 +241,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}> Describe your product in detail</InputLabel>
                                             <Input
                                                 name='description'
-                                                value={product?.description ?? values.description}
+                                                value={values.description}
                                                 minRows={6}
                                                 multiline
                                                 onChange={handleChange}
@@ -265,7 +257,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>Price</InputLabel>
                                             <Input
                                                 name='price'
-                                                value={product?.price ?? values.price}
+                                                value={values.price}
                                                 variant='outlined'
                                                 onChange={handleChange}
                                                 startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -283,7 +275,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>Name</InputLabel>
                                             <Input
                                                 name='name'
-                                                value={product?.user?.name ?? values.name}
+                                                value={values.name}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.name && touched.name ? errors.name : null}</FormHelperText>
@@ -293,7 +285,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>E-mail</InputLabel>
                                             <Input
                                                 name='email'
-                                                value={product?.user?.email ?? values.email}
+                                                value={values.email}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.email && touched.email ? errors.email : null}</FormHelperText>
@@ -303,7 +295,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>Phone</InputLabel>
                                             <Input
                                                 name='phone'
-                                                value={product?.user?.phone ?? values.phone}
+                                                value={values.phone}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.phone && touched.phone ? errors.phone : null}</FormHelperText>
@@ -313,7 +305,7 @@ const EditProduct = ({ userId, image, productID }) => {
                                             <InputLabel className={classes.inputLabel}>City</InputLabel>
                                             <Input
                                                 name='city'
-                                                value={product?.user?.city ?? values.city}
+                                                value={values.city}
                                                 onChange={handleChange}
                                             />
                                             <FormHelperText>{errors.city && touched.city ? errors.city : null}</FormHelperText>
@@ -326,7 +318,7 @@ const EditProduct = ({ userId, image, productID }) => {
 
                                             ? <CircularProgress />
                                             : <Button type='submit' variant='contained' color='primary'>
-                                                Publish
+                                                Save
                                             </Button>
                                     }
                                 </Container>
@@ -348,11 +340,15 @@ export async function getServerSideProps(req ) {
     if (!session) {
         return { props: {} }
     }
+
+    await dbConnect();
+    const product = await ProductsModel.findOne({ _id: id });
+    
     return {
         props: {
             userId: session.user.id,
             image: session.user.image ?? '/images/anunx-logo.png',
-            productID: JSON.parse(JSON.stringify(id)), 
+            product: JSON.parse(JSON.stringify(product)), 
         }
     }
 }

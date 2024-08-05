@@ -8,7 +8,6 @@ const post = (async (req, res) => {
 
     const form = new formidable.IncomingForm({
         multiples: true,
-        uploadDir: 'public/uploads',
         keepExtensions: true,
     })
 
@@ -20,15 +19,6 @@ const post = (async (req, res) => {
         const { files } = fields
 
         const filesParser = JSON.parse(files)
-
-        const filesToSave = []
-
-        filesParser.files.forEach(async file => {
-            filesToSave.push({ 
-                    name: file.pathname, 
-                    path: file.url
-                })
-        })
             
         const { 
             title, 
@@ -42,8 +32,9 @@ const post = (async (req, res) => {
             image,
             city,
         } = fields
-
+        
         const product = new ProductsModel({
+            _id: fields.id ?? null,
             title,
             category,
             description,
@@ -56,11 +47,11 @@ const post = (async (req, res) => {
                 image: image == 'null' ? null : image,
                 city,
             },
-            files: filesToSave,
+            files: filesParser.files,
             date : Date.now(),
         })
-
-        const savedProduct = await product.save()
+       
+        const savedProduct = fields.id ? await ProductsModel.findByIdAndUpdate({ _id: fields.id }, product) : await product.save()
 
         if(!savedProduct) return res.status(500).json({ message: 'error' })
 

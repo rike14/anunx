@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: '#d32f2f',
     }
+  },
+  title: {
+    textWrap: 'wrap'
   }
 }))
 
@@ -186,6 +189,7 @@ const Home = ({ user }) => {
               return (
               <Grid item xs={12} sm={6} md={4} key={key}>
                 <Card 
+                  className={classes.title}
                   image={product.files[0].path}
                   title={product.title}
                   subtitle={formatCurrency(product.price)}
@@ -195,7 +199,7 @@ const Home = ({ user }) => {
                         size='small' 
                         color='primary'
                         variant="contained"
-                        href={`/user/publish?id=${product._id}`}
+                        href={`/user/publish/${product._id}`}
                         startIcon={<EditIcon />}
                       >
                         Edit
