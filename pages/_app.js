@@ -19,7 +19,11 @@ export default function MyApp({
         <title>Anunx</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
-      <SessionProvider session={pageProps}>
+      <SessionProvider 
+        session={pageProps} 
+        refetchInterval={5 * 60}
+        refetchOnWindowFocus={true}
+      >
         <ThemeProvider theme={theme}>
           <ToastyProvider>
           <CssBaseline />
